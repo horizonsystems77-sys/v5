@@ -53,6 +53,11 @@
         th, td { padding: 12px 15px; text-align: right; border-bottom: 1px solid #f1f5f9; }
         th { background: var(--sky-blue-light); color: var(--sky-blue-dark); }
         img.thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            header { flex-direction: column; gap: 10px; text-align: center; }
+        }
     </style>
 </head>
 <body>
@@ -143,7 +148,7 @@
             apiKey: "AIzaSyD-bac9KfXCRvLrBR8GrFmN5E4YQ8rl41A",
             authDomain: "konfor-c1128.firebaseapp.com",
             projectId: "konfor-c1128",
-            storageBucket: "konfor-c1128.appspot.com",
+            storageBucket: "konfor-c1128.firebasestorage.app",
             messagingSenderId: "986871870236",
             appId: "1:986871870236:web:22d221696e46c978480d9",
             measurementId: "G-Z0975DMLLK"
@@ -167,12 +172,11 @@
         function login() {
             const email = document.getElementById('login-email').value;
             const pass = document.getElementById('login-password').value;
-            auth.signInWithEmailAndPassword(email, pass).catch(err => alert("خطأ: " + err.message));
+            auth.signInWithEmailAndPassword(email, pass).catch(err => alert("خطأ في تسجيل الدخول: " + err.message));
         }
 
         function logout() { auth.signOut(); }
 
-        // تحويل الملف إلى بيانات مباشرة لرفعها من اللوحة مباشرة
         function readFileAsDataURL(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -213,7 +217,6 @@
                 if (pdfUrl) data.pdfUrl = pdfUrl;
 
                 if (id) {
-                    // إذا كان تعديل ولا توجد صورة جديدة، نحتفظ بالقديمة
                     if (!imageUrl) delete data.imageUrl;
                     if (!pdfUrl) delete data.pdfUrl;
 
