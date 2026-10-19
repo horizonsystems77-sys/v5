@@ -138,19 +138,20 @@
         </div>
     </div>
 
-    <!-- مكتبات Firebase -->
+    <!-- مكتبات Firebase المتوافقة (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <script>
+        // إعدادات المشروع الصحيحة والمحدثة من Firebase
         const firebaseConfig = {
-            apiKey: "AIzaSyD-bac9KfXCRvLrBR8GrFmN5E4YQ8rl41A",
+            apiKey: "AIzaSyD-bac9kfXCRvLrBR8GrfMn5E4YQ8rl41A",
             authDomain: "konfor-c1128.firebaseapp.com",
             projectId: "konfor-c1128",
             storageBucket: "konfor-c1128.firebasestorage.app",
             messagingSenderId: "986871870236",
-            appId: "1:986871870236:web:22d221696e46c978480d9",
+            appId: "1:986871870236:web:22d2216996e46c978480d9",
             measurementId: "G-Z0975DMLLK"
         };
 
@@ -265,7 +266,7 @@
             return key;
         }
 
-        function editProduct(id, title, category, desc) {
+        function editProduct(id, title, category, desc, desc) {
             document.getElementById('product-id').value = id;
             document.getElementById('product-title').value = title;
             document.getElementById('product-category').value = category;
