@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | Horizon Systems</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sky-blue-light: #e0f2fe;
+            --sky-blue-main: #38bdf8;
+            --sky-blue-dark: #0284c7;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #bae6fd;
+            --danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; font-family: 'Cairo', sans-serif; margin: 0; padding: 0; }
+        body { background-color: var(--bg-color); color: var(--text-color); padding: 20px; }
+
+        #login-section {
+            max-width: 400px; margin: 80px auto; background: var(--card-bg);
+            padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.15);
+            border: 1px solid var(--border-color);
+        }
+
+        #dashboard-section { display: none; max-width: 1000px; margin: 0 auto; }
+
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--card-bg); padding: 15px 25px; border-radius: 10px;
+            border: 1px solid var(--border-color); margin-bottom: 25px;
+        }
+
+        h2 { color: var(--sky-blue-dark); }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; outline: none; }
+        input:focus, select:focus { border-color: var(--sky-blue-main); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); }
+
+        .btn {
+            background: var(--sky-blue-main); color: white; border: none; padding: 10px 20px;
+            border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.3s;
+        }
+        .btn:hover { background: var(--sky-blue-dark); }
+        .btn-danger { background: var(--danger); }
+
+        .card { background: var(--card-bg); padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 25px; }
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 10px; overflow: hidden; }
+        th, td { padding: 12px 15px; text-align: right; border-bottom: 1px solid #f1f5f9; }
+        th { background: var(--sky-blue-light); color: var(--sky-blue-dark); }
+        img.thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- شاشة تسجيل الدخول -->
+    <div id="login-section">
+        <h2 style="text-align: center; margin-bottom: 20px;">تسجيل الدخول</h2>
+        <div class="form-group">
+            <label>البريد الإلكتروني:</label>
+            <input type="email" id="login-email" placeholder="admin@domain.com">
+        </div>
+        <div class="form-group">
+            <label>كلمة السر:</label>
+            <input type="password" id="login-password" placeholder="******">
+        </div>
+        <button class="btn" style="width: 100%;" onclick="login()">دخول</button>
+    </div>
+
+    <!-- لوحة التحكم الرئيسية -->
+    <div id="dashboard-section">
+        <header>
+            <h2>لوحة إدارة المنتجات والملفات</h2>
+            <button class="btn btn-danger" onclick="logout()">تسجيل خروج</button>
+        </header>
+
+        <div class="card">
+            <h3 id="form-title" style="margin-bottom: 15px;">إضافة منتج أو ملف جديد</h3>
+            <form id="product-form">
+                <input type="hidden" id="product-id">
+                
+                <div class="form-group">
+                    <label>القسم:</label>
+                    <select id="product-category" required>
+                        <option value="furnishings">قسم المفروشات</option>
+                        <option value="home-furnishings">قسم المفروشات المنزلية</option>
+                        <option value="office-furniture">قسم الأثاث المكتبي</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>اسم المنتج / الكتالوج:</label>
+                    <input type="text" id="product-title" required placeholder="مثال: طقم كنب فاخر">
+                </div>
+
+                <div class="form-group">
+                    <label>الوصف:</label>
+                    <textarea id="product-desc" rows="3" placeholder="وصف المنتج..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>اختر صورة من المعرض/الجهاز:</label>
+                    <input type="file" id="product-image" accept="image/*">
+                </div>
+
+                <div class="form-group">
+                    <label>اختر ملف PDF من الجهاز:</label>
+                    <input type="file" id="product-pdf" accept="application/pdf">
+                </div>
+
+                <button type="button" class="btn" onclick="saveProduct()">حفظ البيانات</button>
+            </form>
+        </div>
+
+        <div class="card table-responsive">
+            <h3 style="margin-bottom: 15px;">المنتجات والملفات الحالية</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الصورة</th>
+                        <th>الاسم</th>
+                        <th>القسم</th>
+                        <th>ملف PDF</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="products-list"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- مكتبات Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyD-bac9KfXCRvLrBR8GrFmN5E4YQ8rl41A",
+            authDomain: "konfor-c1128.firebaseapp.com",
+            projectId: "konfor-c1128",
+            storageBucket: "konfor-c1128.appspot.com",
+            messagingSenderId: "986871870236",
+            appId: "1:986871870236:web:22d221696e46c978480d9",
+            measurementId: "G-Z0975DMLLK"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('dashboard-section').style.display = 'block';
+                loadProducts();
+            } else {
+                document.getElementById('login-section').style.display = 'block';
+                document.getElementById('dashboard-section').style.display = 'none';
+            }
+        });
+
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-password').value;
+            auth.signInWithEmailAndPassword(email, pass).catch(err => alert("خطأ: " + err.message));
+        }
+
+        function logout() { auth.signOut(); }
+
+        // تحويل الملف إلى بيانات مباشرة لرفعها من اللوحة مباشرة
+        function readFileAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function saveProduct() {
+            const id = document.getElementById('product-id').value;
+            const title = document.getElementById('product-title').value;
+            const category = document.getElementById('product-category').value;
+            const desc = document.getElementById('product-desc').value;
+            const imgFile = document.getElementById('product-image').files[0];
+            const pdfFile = document.getElementById('product-pdf').files[0];
+
+            if (!title) return alert("يرجى إدخال اسم المنتج أو الكتالوج!");
+
+            try {
+                let imageUrl = "";
+                let pdfUrl = "";
+
+                if (imgFile) {
+                    imageUrl = await readFileAsDataURL(imgFile);
+                }
+
+                if (pdfFile) {
+                    pdfUrl = await readFileAsDataURL(pdfFile);
+                }
+
+                const data = {
+                    title, category, desc,
+                    updatedAt: new Date()
+                };
+
+                if (imageUrl) data.imageUrl = imageUrl;
+                if (pdfUrl) data.pdfUrl = pdfUrl;
+
+                if (id) {
+                    // إذا كان تعديل ولا توجد صورة جديدة، نحتفظ بالقديمة
+                    if (!imageUrl) delete data.imageUrl;
+                    if (!pdfUrl) delete data.pdfUrl;
+
+                    await db.collection('products').doc(id).update(data);
+                    alert("تم التعديل بنجاح!");
+                } else {
+                    data.createdAt = new Date();
+                    await db.collection('products').add(data);
+                    alert("تمت الإضافة بنجاح!");
+                }
+
+                document.getElementById('product-form').reset();
+                document.getElementById('product-id').value = "";
+                document.getElementById('form-title').innerText = "إضافة منتج أو ملف جديد";
+            } catch (err) {
+                alert("حدث خطأ: " + err.message);
+            }
+        }
+
+        function loadProducts() {
+            db.collection('products').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+                const list = document.getElementById('products-list');
+                list.innerHTML = "";
+                snapshot.forEach(doc => {
+                    const item = doc.data();
+                    list.innerHTML += `
+                        <tr>
+                            <td>${item.imageUrl ? `<img src="${item.imageUrl}" class="thumb">` : 'لا يوجد'}</td>
+                            <td><b>${item.title}</b></td>
+                            <td>${getCategoryName(item.category)}</td>
+                            <td>${item.pdfUrl ? `<a href="${item.pdfUrl}" target="_blank" download="file.pdf">تحميل/عرض PDF</a>` : 'لا يوجد'}</td>
+                            <td>
+                                <button class="btn" onclick="editProduct('${doc.id}', '${item.title}', '${item.category}', '${item.desc}')">تعديل</button>
+                                <button class="btn btn-danger" onclick="deleteProduct('${doc.id}')">حذف</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            });
+        }
+
+        function getCategoryName(key) {
+            if (key === 'furnishings') return 'المفروشات';
+            if (key === 'home-furnishings') return 'المفروشات المنزلية';
+            if (key === 'office-furniture') return 'الأثاث المكتبي';
+            return key;
+        }
+
+        function editProduct(id, title, category, desc) {
+            document.getElementById('product-id').value = id;
+            document.getElementById('product-title').value = title;
+            document.getElementById('product-category').value = category;
+            document.getElementById('product-desc').value = desc;
+            document.getElementById('form-title').innerText = "تعديل المنتج الحالي";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function deleteProduct(id) {
+            if (confirm("هل أنت متأكد من الحذف؟")) {
+                await db.collection('products').doc(id).delete();
+            }
+        }
+    </script>
+</body>
+</html>
