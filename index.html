@@ -9,6 +9,71 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&family=Tajawal:wght@200;300;400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<style>
+    /* تنسيق كروت فايربيس لتطابق كروت القالب تماماً */
+    .custom-card {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+        position: relative;
+        transition: transform 0.3s ease;
+    }
+    .custom-card:hover {
+        transform: translateY(-5px);
+    }
+    .custom-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 15px;
+    }
+    .custom-card h3 {
+        font-family: 'Tajawal', sans-serif;
+        font-size: 1.2rem;
+        color: #2d3748;
+        margin: 5px 0 0 0;
+    }
+    .custom-card p {
+        font-family: 'Tajawal', sans-serif;
+        font-size: 0.85rem;
+        color: #718096;
+        margin: 0;
+    }
+    .custom-card .action-btns {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+        margin-top: auto;
+    }
+    .custom-card .wa-btn {
+        flex: 1;
+        background: #4a5568;
+        color: #ffffff;
+        padding: 8px 12px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+    .custom-card .pdf-link {
+        background: #2b6cb0;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-size: 0.8rem;
+    }
+</style>
 </head>
 <body data-p="home">
 <div class="hw"><section class="hs"><video class="hv" id="hv" autoplay muted loop playsinline preload="auto" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260428_193507_4286c423-2fd9-4efd-92bd-91a939453fc1.mp4"></video>
@@ -25,7 +90,7 @@
 
 <section class="wrap"><h2 class="st rv" data-k="a.t"></h2><div class="bed"><p class="rv" data-k="a.s"></p><div class="fr rv"><iframe src="bed.html" sandbox="allow-scripts" loading="lazy" title="KONFOR"></iframe></div></div></section>
 
-<!-- ملفات القالب الأصلية -->
+<!-- ملفات الموقع الأصلية -->
 <script src="js/i18n.js"></script>
 <script src="js/data.js"></script>
 <script src="js/app.js"></script>
@@ -50,38 +115,41 @@
     }
     const db = firebase.firestore();
 
-    let cachedProductsHTML = "";
+    // مزامنة المنتجات وعرضها مباشرة في شبكة المنتجات
+    function renderFirebaseProducts() {
+        db.collection('products').onSnapshot(snapshot => {
+            const container = document.getElementById('cc');
+            if (!container) return;
 
-    // جلب المنتجات وتخزينها
-    db.collection('products').onSnapshot(snapshot => {
-        let html = "";
-        snapshot.forEach(doc => {
-            const item = doc.data();
-            html += `
-                <div class="client-product-card" style="background: rgba(255,255,255,0.08); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); padding: 20px; border-radius: 14px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); margin-bottom: 20px;">
-                    ${item.imageUrl ? `<img src="${item.imageUrl}" style="width:100%; height:220px; object-fit:cover; border-radius:8px;">` : ''}
-                    <h3 style="color:#fff; font-family:'Tajawal',sans-serif; font-size:1.3rem; margin:0;">${item.title || ''}</h3>
-                    ${item.desc ? `<p style="color:#e2e8f0; font-family:'Tajawal',sans-serif; font-size:1rem; margin:0; line-height:1.5;">${item.desc}</p>` : ''}
-                    ${item.pdfUrl ? `<a href="${item.pdfUrl}" target="_blank" download="catalog.pdf" style="display:inline-block; background:#38bdf8; color:#fff; padding:10px 20px; border-radius:8px; text-decoration:none; font-weight:600; text-align:center; margin-top:auto;">تحميل الكتالوج (PDF)</a>` : ''}
-                </div>
-            `;
+            // إزالة الكروت المضافة سابقاً لمنع التكرار
+            const oldFbCards = container.querySelectorAll('.custom-card');
+            oldFbCards.forEach(el => el.remove());
+
+            snapshot.forEach(doc => {
+                const item = doc.data();
+                const card = document.createElement('div');
+                card.className = 'custom-card';
+
+                card.innerHTML = `
+                    ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.title}">` : '<div style="height:200px; background:#edf2f7; width:100%; border-radius:15px;"></div>'}
+                    <h3>${item.title || 'منتج جديد'}</h3>
+                    <p>${item.desc || ''}</p>
+                    <div class="action-btns">
+                        <a href="https://wa.me/963991310740" target="_blank" class="wa-btn">اطلب عبر واتساب</a>
+                        ${item.pdfUrl ? `<a href="${item.pdfUrl}" target="_blank" download="catalog.pdf" class="pdf-link">PDF</a>` : ''}
+                    </div>
+                `;
+                
+                // إضافتها في بداية المعرض لكي تظهر أول المنتجات أمام العميل
+                container.prepend(card);
+            });
         });
-        cachedProductsHTML = html;
-        forceInject();
-    });
-
-    // دالة لفرض ظهور المنتجات وحمايتها من المسح بواسطة app.js
-    function forceInject() {
-        const container = document.getElementById('cc');
-        if (container && cachedProductsHTML) {
-            if (!container.innerHTML.includes('client-product-card')) {
-                container.innerHTML += cachedProductsHTML;
-            }
-        }
     }
 
-    // مراقبة مستمرة لضمان بقاء المنتجات ظاهرة طوال الوقت أمام العميل
-    setInterval(forceInject, 300);
+    // تشغيل الجلب بعد اكتمال القالب
+    window.addEventListener('load', () => {
+        setTimeout(renderFirebaseProducts, 800);
+    });
 </script>
 </body>
 </html>
