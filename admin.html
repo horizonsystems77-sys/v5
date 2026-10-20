@@ -135,6 +135,28 @@
             </form>
         </div>
 
+        <!-- تبديل كتالوج PDF الخاص بكل قسم -->
+        <div class="card">
+            <h3 style="margin-bottom: 15px;">تبديل كتالوج PDF للأقسام</h3>
+            <div class="form-group">
+                <label>القسم:</label>
+                <select id="cat-section">
+                    <option value="mf">كتالوج المفروشات والأسرة</option>
+                    <option value="hm">كتالوج المفروشات المنزلية</option>
+                    <option value="of">كتالوج الأثاث المكتبي</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>ملف PDF الجديد (يستبدل الحالي):</label>
+                <input type="file" id="cat-pdf" accept="application/pdf">
+                <div class="hint">الحجم الأقصى نحو 900 كيلوبايت.</div>
+            </div>
+            <div class="actions">
+                <button type="button" class="btn" onclick="saveCatalog()">حفظ الكتالوج</button>
+                <button type="button" class="btn btn-danger" onclick="removeCatalog()">العودة للملف الأصلي</button>
+            </div>
+        </div>
+
         <div class="card table-responsive">
             <h3 style="margin-bottom: 15px;">المنتجات والملفات الحالية</h3>
             <table>
@@ -427,6 +449,37 @@
         async function deleteProduct(id) {
             if (confirm("هل أنت متأكد من الحذف؟")) {
                 await db.collection('products').doc(id).delete();
+            }
+        }
+
+        // ===== كتالوج PDF الخاص بالأقسام =====
+        async function saveCatalog() {
+            const section = document.getElementById('cat-section').value;
+            const f = document.getElementById('cat-pdf').files[0];
+            if (!f) return alert("اختر ملف PDF أولاً");
+            try {
+                const pdfUrl = await readFileAsDataURL(f);
+                if (pdfUrl.length > MAX_TOTAL) {
+                    return alert("الملف كبير (" + Math.round(pdfUrl.length / 1024) + " KB). الحد الأقصى 900 KB.");
+                }
+                await db.collection('catalogs').doc(section).set({
+                    pdfUrl, name: f.name.replace(/\.pdf$/i, ""), updatedAt: new Date()
+                });
+                document.getElementById('cat-pdf').value = "";
+                alert("تم تبديل الكتالوج بنجاح!");
+            } catch (err) {
+                alert("حدث خطأ: " + err.message);
+            }
+        }
+
+        async function removeCatalog() {
+            const section = document.getElementById('cat-section').value;
+            if (!confirm("الرجوع للملف الأصلي لهذا القسم؟")) return;
+            try {
+                await db.collection('catalogs').doc(section).delete();
+                alert("تم. سيُستخدم الملف الأصلي بعد تحديث الصفحة.");
+            } catch (err) {
+                alert("حدث خطأ: " + err.message);
             }
         }
     </script>
