@@ -524,6 +524,7 @@
       <div class="t">
         <b id="lt"></b>
         <span id="ld"></span>
+        <div id="lm"></div>
         <a class="buy" id="lbb" target="_blank" rel="noopener noreferrer"></a>
       </div>
 
@@ -541,12 +542,45 @@
     });
   }
 
+  // عرض قائمة المقاسات الكاملة داخل المعرض المنبثق
+  function renderSizes(product) {
+    const box = $("#lm", lightbox);
+    if (!box) return;
+    box.replaceChildren();
+    if (!Array.isArray(product.m)) return;
+
+    box.style.cssText =
+      "margin-top:10px;font-size:.85rem;line-height:1.6;text-align:start";
+    const labels = typeof SIZE_LABELS !== "undefined" ? SIZE_LABELS : {};
+
+    product.m.forEach(([key, value]) => {
+      const l = labels[key];
+      const row = createElement("div");
+      row.style.cssText = "display:flex;flex-wrap:wrap;gap:6px;margin-top:4px";
+      row.append(
+        createElement(
+          "b",
+          "",
+          (l ? l[language] ?? l[0] : key) + (value ? ":" : "")
+        )
+      );
+      if (value) {
+        const v = createElement("span", "", value);
+        v.dir = "ltr";
+        v.style.unicodeBidi = "isolate";
+        row.append(v);
+      }
+      box.append(row);
+    });
+  }
+
   function openLightbox(product) {
     if (!product?.i?.length || !lightbox) return;
 
     currentProduct = product;
     $("#lt", lightbox).textContent = productName(product);
     $("#ld", lightbox).textContent = productDescription(product);
+    renderSizes(product);
 
     const buyLink = $("#lbb", lightbox);
     buyLink.replaceChildren();
