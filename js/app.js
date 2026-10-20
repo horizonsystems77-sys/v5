@@ -1,20 +1,15 @@
 (() => {
   "use strict";
 
-  // Configuration
+  // ========== الإعدادات ==========
   const LANGUAGES = ["ar", "en", "tr", "fr"];
   const WHATSAPP_NUMBER = "963991310740";
   const PAGE = document.body.dataset.p || "home";
 
-  // Reuse the data supplied by the existing website scripts.
-  const TRANSLATIONS =
-    typeof K !== "undefined" && K ? K : {};
-
-  const PRODUCTS =
-    typeof P !== "undefined" && Array.isArray(P) ? P : [];
-
-  const DESCRIPTIONS =
-    typeof OD !== "undefined" && OD ? OD : {};
+  // البيانات القادمة من data.js و i18n.js
+  const TRANSLATIONS = typeof K !== "undefined" && K ? K : {};
+  const PRODUCTS = typeof P !== "undefined" && Array.isArray(P) ? P : [];
+  const DESCRIPTIONS = typeof OD !== "undefined" && OD ? OD : {};
 
   const PAGE_LIST = [
     ["home", "index.html", "nav.home"],
@@ -25,25 +20,12 @@
   ];
 
   const SUBCATEGORIES = {
-    mf: ["beds", "mattresses"], 
+    mf: ["beds", "mattresses"],
     hm: ["bedroom", "dining", "sitting", "tables"],
-    of: [
-      "exec",
-      "work",
-      "ops",
-      "meet",
-      "recep",
-      "store",
-      "school",
-      "seat",
-    ],
+    of: ["exec", "work", "ops", "meet", "recep", "store", "school", "seat"],
   };
 
-  const FILTERS = {
-    mf: "all",
-    hm: "all",
-    of: "all",
-  };
+  const FILTERS = { mf: "all", hm: "all", of: "all" };
 
   let language = 0;
   let currentProduct = null;
@@ -54,113 +36,107 @@
   let lightbox = null;
   let navigation = null;
 
-  // Firebase Integration for Admin Panel Products
+  // ========== Firebase ==========
   const firebaseConfig = {
-      apiKey: "AIzaSyD-bac9kfXCRvLrBR8GrfMn5E4YQ8rl41A",
-      authDomain: "konfor-c1128.firebaseapp.com",
-      projectId: "konfor-c1128",
-      storageBucket: "konfor-c1128.firebasestorage.app",
-      messagingSenderId: "986871870236",
-      appId: "1:986871870236:web:22d2216996e46c978480d9",
-      measurementId: "G-Z0975DMLLK"
+    apiKey: "AIzaSyD-bac9kfXCRvLrBR8GrfMn5E4YQ8rl41A",
+    authDomain: "konfor-c1128.firebaseapp.com",
+    projectId: "konfor-c1128",
+    storageBucket: "konfor-c1128.firebasestorage.app",
+    messagingSenderId: "986871870236",
+    appId: "1:986871870236:web:22d2216996e46c978480d9",
+    measurementId: "G-Z0975DMLLK",
   };
 
-  if (typeof firebase !== 'undefined' && !firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
+  if (typeof firebase !== "undefined" && !firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+
+  function detectSection(item) {
+    let s = "mf";
+    let u = "beds";
+    const cat = String(item.category || item.section || "").toLowerCase();
+
+    if (/home|hm|منزل/.test(cat)) {
+      s = "hm";
+      u = "bedroom";
+    } else if (/office|^of$|مكتب/.test(cat)) {
+      s = "of";
+      u = "exec";
+    }
+    return { s, u };
   }
 
   function fetchFirebaseProducts(onReady) {
-      if (typeof firebase === 'undefined') {
-          if (onReady) onReady();
-          return;
-      }
-      const db = firebase.firestore();
-      db.collection('products').onSnapshot(snapshot => {
-          const staticProducts = PRODUCTS.filter(p => !p.isFirebase);
-          const firebaseProducts = [];
-
-          snapshot.forEach(doc => {
-              const item = doc.data();
-              let s = "mf";
-              let u = "beds";
-              const cat = (item.category || "").toLowerCase();
-              if (cat.includes("home") || cat.includes("hm") || cat.includes("منزلية")) {
-                  s = "hm";
-                  u = "bedroom";
-              } else if (cat.includes("office") || cat.includes("of") || cat.includes("مكتبي")) {
-                  s = "of";
-                  u = "exec";
-              }
-
-              firebaseProducts.push({
-                  isFirebase: true,
-                  id: doc.id,
-                  s: s,
-                  u: u,
-                  n: item.title || "منتج جديد",
-                  d: [item.desc || "", item.desc || "", item.desc || "", item.desc || ""],
-                  imageUrl: item.imageUrl || "",
-                  pdfUrl: item.pdfUrl || "",
-                  z: item.size || "",
-                  i: item.imageUrl ? [item.imageUrl] : [0]
-              });
-          });
-
-          PRODUCTS.length = 0;
-          PRODUCTS.push(...firebaseProducts, ...staticProducts);
-
-          if (onReady) onReady();
-      }, err => {
-          console.error("Firestore error:", err);
-          if (onReady) onReady();
-      });
-  }
-
-  // Safely restore the preferred language.
-  try {
-    const savedLanguage = localStorage.getItem("kl");
-    const savedIndex = LANGUAGES.indexOf(savedLanguage);
-
-    if (savedIndex !== -1) {
-      language = savedIndex;
+    if (typeof firebase === "undefined") {
+      console.error("Firebase library not loaded");
+      if (onReady) onReady();
+      return;
     }
-  } catch {
-    // Storage may be unavailable in restricted browser contexts.
+
+    const db = firebase.firestore();
+
+    db.collection("products").onSnapshot(
+      (snapshot) => {
+        const staticProducts = PRODUCTS.filter((p) => !p.isFirebase);
+        const firebaseProducts = [];
+
+        snapshot.forEach((doc) => {
+          const item = doc.data();
+          const { s, u } = detectSection(item);
+          const desc = item.desc || "";
+
+          firebaseProducts.push({
+            isFirebase: true,
+            id: doc.id,
+            s,
+            u,
+            n: item.title || "منتج جديد",
+            d: [desc, desc, desc, desc],
+            imageUrl: item.imageUrl || "",
+            pdfUrl: item.pdfUrl || "",
+            z: item.size || "",
+            i: item.imageUrl ? [item.imageUrl] : [0],
+          });
+        });
+
+        PRODUCTS.length = 0;
+        PRODUCTS.push(...firebaseProducts, ...staticProducts);
+
+        if (onReady) onReady();
+      },
+      (err) => {
+        console.error("Firestore error:", err);
+        if (onReady) onReady();
+      }
+    );
   }
 
-  // DOM helpers
-  const $ = (selector, root = document) => root.querySelector(selector);    const $$ = (selector, root = document) =>
+  // استرجاع اللغة المحفوظة
+  try {
+    const savedIndex = LANGUAGES.indexOf(localStorage.getItem("kl"));
+    if (savedIndex !== -1) language = savedIndex;
+  } catch {}
+
+  // ========== أدوات مساعدة ==========
+  const $ = (selector, root = document) => root.querySelector(selector);
+  const $$ = (selector, root = document) =>
     Array.from(root.querySelectorAll(selector));
 
   function createElement(tag, className = "", text = null) {
     const element = document.createElement(tag);
-
-    if (className) {
-      element.className = className;
-    }
-
-    if (text !== null && text !== undefined) {
-      element.textContent = String(text);
-    }
-
+    if (className) element.className = className;
+    if (text !== null && text !== undefined) element.textContent = String(text);
     return element;
   }
 
   function translate(key) {
     const value = TRANSLATIONS[key];
-
-    if (Array.isArray(value)) {
-      return value[language] ?? value[0] ?? key;
-    }
-
+    if (Array.isArray(value)) return value[language] ?? value[0] ?? key;
     return value ?? key;
   }
 
   function localizedValue(value, fallback = "") {
-    if (Array.isArray(value)) {
-      return value[language] ?? value[0] ?? fallback;
-    }
-
+    if (Array.isArray(value)) return value[language] ?? value[0] ?? fallback;
     return value ?? fallback;
   }
 
@@ -171,10 +147,7 @@
   function productDescription(product) {
     return localizedValue(
       product.d,
-      localizedValue(
-        DESCRIPTIONS[product.u],
-        ""
-      )
+      localizedValue(DESCRIPTIONS[product.u], "")
     );
   }
 
@@ -183,44 +156,35 @@
   }
 
   function getProductImage(product, index = 0, fullSize = false) {
-    if (product.imageUrl) {
-      return product.imageUrl;
-    }
+    if (product.imageUrl) return product.imageUrl;
     const imageId = product.i[index];
-    if (typeof imageId === 'string' && (imageId.startsWith('data:') || imageId.startsWith('http'))) {
+    if (
+      typeof imageId === "string" &&
+      (imageId.startsWith("data:") || imageId.startsWith("http"))
+    ) {
       return imageId;
     }
     return `images/${fullSize ? "f" : "t"}/${encodeURIComponent(imageId)}.webp`;
   }
 
   function observeReveal(element) {
-    if (revealObserver) {
-      revealObserver.observe(element);
-    } else {
-      element.classList.add("in");
-    }
+    if (revealObserver) revealObserver.observe(element);
+    else element.classList.add("in");
   }
 
-  // Static SVG icons.
+  // ========== الأيقونات ==========
   const FLOWER_ICON = `
-    <svg width="30" height="30"
-      viewBox="-36 -36 72 72" fill="currentColor"
-      aria-hidden="true">
+    <svg width="30" height="30" viewBox="-36 -36 72 72" fill="currentColor" aria-hidden="true">
       <path d="M0-3C-11-11-10-26 0-33C10-26 11-11 0-3Z"/>
-      <path transform="rotate(72)"
-        d="M0-3C-11-11-10-26 0-33C10-26 11-11 0-3Z"/>
-      <path transform="rotate(144)"
-        d="M0-3C-11-11-10-26 0-33C10-26 11-11 0-3Z"/>
-      <path transform="rotate(216)"
-        d="M0-3C-11-11-10-26 0-33C10-26 11-11 0-3Z"/>
-      <path transform="rotate(288)"
-        d="M0-3C-11-11-10-26 0-33C10-26 11-11 0-3Z"/>
+      <path transform="rotate(72)" d="M0-3C-11-11-10-26 0-33C10-26 11-11 0-3Z"/>
+      <path transform="rotate(144)" d="M0-3C-11-11-10-26 0-33C10-26 11-11 0-3Z"/>
+      <path transform="rotate(216)" d="M0-3C-11-11-10-26 0-33C10-26 11-11 0-3Z"/>
+      <path transform="rotate(288)" d="M0-3C-11-11-10-26 0-33C10-26 11-11 0-3Z"/>
     </svg>
   `;
 
   const WHATSAPP_ICON = `
-    <svg viewBox="0 0 24 24" fill="currentColor"
-      aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.4A10 10 0 1 0 12 2zm5.3 13.8c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.2c.1.2.1.4 0 .5l-.4.6c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.2 1.3 2.5 1.5.3.1.4.1.6-.1l.8-1c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.2.1.8-.1 1.4z"/>
     </svg>
   `;
@@ -229,20 +193,14 @@
     const message = translate("msg")
       .replace("{n}", productName(product))
       .replace("{c}", categoryName(product));
-
-    return (
-      `https://wa.me/${WHATSAPP_NUMBER}` +
-      `?text=${encodeURIComponent(message)}`
-    );
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
   }
 
   function setWhatsAppLink(element) {
-    if (element) {
-      element.href = `https://wa.me/${WHATSAPP_NUMBER}`;
-    }
+    if (element) element.href = `https://wa.me/${WHATSAPP_NUMBER}`;
   }
 
-  // Navigation
+  // ========== التنقل ==========
   function initializeNavigation() {
     navigation = createElement("nav");
 
@@ -262,10 +220,8 @@
 
         <a class="nb" href="contact.html">
           <span class="ic">
-            <svg viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round"
-              aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M7 17L17 7M8 7h9v9"/>
             </svg>
           </span>
@@ -273,11 +229,8 @@
         </a>
       </div>
 
-      <button class="bg" id="bg"
-        type="button" aria-label="Open menu"
-        aria-controls="menu" aria-expanded="false">
-        ☰
-      </button>
+      <button class="bg" id="bg" type="button" aria-label="Open menu"
+        aria-controls="menu" aria-expanded="false">☰</button>
     `;
 
     const links = $(".lk", navigation);
@@ -285,60 +238,53 @@
 
     PAGE_LIST.forEach(([key, href, translationKey]) => {
       const link = createElement("a");
-
       link.href = href;
       link.dataset.k = translationKey;
       link.dataset.pg = key;
-
       links.append(link);
-    }); 
+    });
 
     ["عربي", "EN", "TR", "FR"].forEach((label, index) => {
       const button = createElement("button", "", label);
-
       button.type = "button";
       button.setAttribute("aria-pressed", "false");
       button.addEventListener("click", () => {
         language = index;
-
         try {
           localStorage.setItem("kl", LANGUAGES[index]);
         } catch {}
-
         render();
       });
-
       languageSwitcher.append(button);
     });
 
     document.body.prepend(navigation);
 
     const menuButton = $("#bg", navigation);
-    const menu = $("#menu", navigation);      menuButton.addEventListener("click", () => { const isOpen = menu.classList.toggle("open"); menuButton.setAttribute("aria-expanded", String(isOpen)); });      $$(".lk a", navigation).forEach((link) => {
-      link.addEventListener("click", () => {
-        closeMenu();
-      });
-    });
-
-    document.addEventListener("click", (event) => {
-      if (
-        menu.classList.contains("open") &&
-        !navigation.contains(event.target)
-      ) {
-        closeMenu();
-      }
-    });
+    const menu = $("#menu", navigation);
 
     function closeMenu() {
       menu.classList.remove("open");
       menuButton.setAttribute("aria-expanded", "false");
     }
 
+    menuButton.addEventListener("click", () => {
+      const isOpen = menu.classList.toggle("open");
+      menuButton.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    $$(".lk a", navigation).forEach((link) => {
+      link.addEventListener("click", closeMenu);
+    });
+
+    document.addEventListener("click", (event) => {
+      if (menu.classList.contains("open") && !navigation.contains(event.target)) {
+        closeMenu();
+      }
+    });
+
     function updateNavigationStyle() {
-      navigation.classList.toggle(
-        "solid",
-        PAGE !== "home" || window.scrollY > 60
-      );
+      navigation.classList.toggle("solid", PAGE !== "home" || window.scrollY > 60);
     }
 
     updateNavigationStyle();
@@ -346,26 +292,19 @@
   }
 
   function initializeFooter() {
-    const footer = createElement("footer", "", "© KONFOR · ALKURDI GROUP");
-    document.body.append(footer);
+    document.body.append(createElement("footer", "", "© KONFOR · ALKURDI GROUP"));
   }
 
+  // ========== الصفحة الرئيسية ==========
   function initializeHome() {
     const collectionGrid = $("#cc");
 
     if (collectionGrid) {
       ["mf", "hm", "of"].forEach((category) => {
-        const product = PRODUCTS.find(
-          (item) => item.s === category
-        );
+        const product = PRODUCTS.find((item) => item.s === category);
+        const page = PAGE_LIST.find((item) => item[0] === category);
 
-        const page = PAGE_LIST.find(
-          (item) => item[0] === category
-        );
-
-        if (!product || !product.i?.length || !page) {
-          return;
-        }
+        if (!product || !product.i?.length || !page) return;
 
         const link = createElement("a", "cc rv");
         link.href = page[1];
@@ -380,17 +319,14 @@
         arrow.setAttribute("aria-hidden", "true");
 
         const content = createElement("div");
-
         const heading = createElement("h3");
         heading.dataset.k = `t.${category}`;
-
         const description = createElement("p");
         description.dataset.k = `s.${category}`;
 
         content.append(heading, description);
         link.append(image, arrow, content);
         collectionGrid.append(link);
-
         observeReveal(link);
       });
     }
@@ -407,18 +343,18 @@
     }
   }
 
+  // ========== المراقبات (Observers) ==========
   function initializeRevealObserver() {
     if (!("IntersectionObserver" in window)) {
       revealObserver = null;
       return;
     }
-
     revealObserver = new IntersectionObserver(
-      (entries, observerInstance) => {
+      (entries, instance) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("in");
-            observerInstance.unobserve(entry.target);
+            instance.unobserve(entry.target);
           }
         });
       },
@@ -431,13 +367,12 @@
       observer = null;
       return;
     }
-
     observer = new IntersectionObserver(
-      (entries, observerInstance) => {
+      (entries, instance) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("in");
-            observerInstance.unobserve(entry.target);
+            instance.unobserve(entry.target);
           }
         });
       },
@@ -445,6 +380,7 @@
     );
   }
 
+  // ========== بطاقات المنتجات ==========
   function buildProductCard(product, index) {
     const card = createElement("article", "card");
     card.style.transitionDelay = `${(index % 3) * 90}ms`;
@@ -460,10 +396,11 @@
     image.decoding = "async";
     image.width = 440;
     image.height = 330;
-
-    image.addEventListener("error", () => {
-      imageButton.classList.add("image-error");
-    }, { once: true });
+    image.addEventListener(
+      "error",
+      () => imageButton.classList.add("image-error"),
+      { once: true }
+    );
 
     const badge = createElement(
       "span",
@@ -475,15 +412,12 @@
     imageButton.addEventListener("click", () => openLightbox(product));
 
     const info = createElement("div", "info");
-
     info.append(
       createElement("h3", "", productName(product)),
       createElement("p", "d", productDescription(product))
     );
 
-    if (product.z) {
-      info.append(createElement("p", "z", product.z));
-    }
+    if (product.z) info.append(createElement("p", "z", product.z));
 
     const buyLink = createElement("a", "buy");
     buyLink.innerHTML = WHATSAPP_ICON;
@@ -491,14 +425,13 @@
     buyLink.href = createWhatsAppURL(product);
     buyLink.target = "_blank";
     buyLink.rel = "noopener noreferrer";
-
     info.append(buyLink);
 
     if (product.pdfUrl) {
       const pdfLink = createElement("a", "buy");
       pdfLink.style.marginInlineStart = "8px";
       pdfLink.style.background = "#0284c7";
-      pdfLink.innerHTML = `<span>PDF</span>`;
+      pdfLink.innerHTML = "<span>PDF</span>";
       pdfLink.href = product.pdfUrl;
       pdfLink.target = "_blank";
       pdfLink.rel = "noopener noreferrer";
@@ -512,14 +445,9 @@
   function renderGrid() {
     const chips = $("#chips");
     const grid = $("#grid");
+    if (!chips || !grid) return;
 
-    if (!chips || !grid) {
-      return;
-    }
-
-    if (observer) {
-      observer.disconnect();
-    }
+    if (observer) observer.disconnect();
 
     chips.replaceChildren();
     grid.replaceChildren();
@@ -532,41 +460,33 @@
         FILTERS[PAGE] === category ? "on" : "",
         translate(`u.${category}`)
       );
-
       button.type = "button";
       button.setAttribute("aria-pressed", String(FILTERS[PAGE] === category));
-
       button.addEventListener("click", () => {
         FILTERS[PAGE] = category;
         renderGrid();
       });
-
       chips.append(button);
     });
 
     const filteredProducts = PRODUCTS.filter(
       (product) =>
         product.s === PAGE &&
-        (FILTERS[PAGE] === "all" ||
-          product.u === FILTERS[PAGE])
+        (FILTERS[PAGE] === "all" || product.u === FILTERS[PAGE])
     );
 
     filteredProducts.forEach((product, index) => {
-      if (!Array.isArray(product.i) || product.i.length === 0) {
-        return;
-      }
+      if (!Array.isArray(product.i) || product.i.length === 0) return;
 
       const card = buildProductCard(product, index);
       grid.append(card);
 
-      if (observer) {
-        observer.observe(card);
-      } else {
-        card.classList.add("in");
-      }
+      if (observer) observer.observe(card);
+      else card.classList.add("in");
     });
   }
 
+  // ========== المعرض المنبثق (Lightbox) ==========
   function initializeLightbox() {
     lightbox = createElement("div");
     lightbox.id = "lb";
@@ -599,16 +519,12 @@
     $("#nx", lightbox).addEventListener("click", () => showImage(currentImageIndex + 1));
 
     lightbox.addEventListener("click", (event) => {
-      if (event.target === lightbox) {
-        closeLightbox();
-      }
+      if (event.target === lightbox) closeLightbox();
     });
   }
 
   function openLightbox(product) {
-    if (!product?.i?.length || !lightbox) {
-      return;
-    }
+    if (!product?.i?.length || !lightbox) return;
 
     currentProduct = product;
     $("#lt", lightbox).textContent = productName(product);
@@ -648,9 +564,7 @@
   }
 
   function showImage(index) {
-    if (!currentProduct?.i?.length || !lightbox) {
-      return;
-    }
+    if (!currentProduct?.i?.length || !lightbox) return;
 
     const imageCount = currentProduct.i.length;
     currentImageIndex = ((index % imageCount) + imageCount) % imageCount;
@@ -663,14 +577,11 @@
     image.src = getProductImage(currentProduct, currentImageIndex, true);
     image.alt = `${productName(currentProduct)} — ${currentImageIndex + 1} / ${imageCount}`;
 
-    $$("#th img", lightbox).forEach((thumbnail, thumbnailIndex) => {
-      const isActive = thumbnailIndex === currentImageIndex;
+    $$("#th img", lightbox).forEach((thumbnail, i) => {
+      const isActive = i === currentImageIndex;
       thumbnail.classList.toggle("on", isActive);
-      if (isActive) {
-        thumbnail.setAttribute("aria-current", "true");
-      } else {
-        thumbnail.removeAttribute("aria-current");
-      }
+      if (isActive) thumbnail.setAttribute("aria-current", "true");
+      else thumbnail.removeAttribute("aria-current");
     });
   }
 
@@ -681,6 +592,7 @@
     currentProduct = null;
   }
 
+  // ========== معاينة الجوال ==========
   function initializeMobilePreview() {
     if (window.self !== window.top) return;
 
@@ -697,6 +609,7 @@
     `;
 
     document.body.append(previewButton, mobilePreview);
+
     $("#mx", mobilePreview).addEventListener("click", closeMobilePreview);
     mobilePreview.addEventListener("click", (event) => {
       if (event.target === mobilePreview) closeMobilePreview();
@@ -705,8 +618,7 @@
 
   function openMobilePreview() {
     if (!mobilePreview) return;
-    const iframe = $("iframe", mobilePreview);
-    iframe.src = window.location.href;
+    $("iframe", mobilePreview).src = window.location.href;
     mobilePreview.classList.add("on");
     document.body.style.overflow = "hidden";
     $("#mx", mobilePreview).focus();
@@ -715,13 +627,46 @@
   function closeMobilePreview() {
     if (!mobilePreview) return;
     mobilePreview.classList.remove("on");
-    $("iframe", mobilePreview).src = "about:blank"; document.body.style.overflow = ""; }    function initializeKeyboardControls() { document.addEventListener("keydown", (event) => { if (event.key === "Escape") { if (lightbox?.classList.contains("on")) closeLightbox(); if (mobilePreview?.classList.contains("on")) closeMobilePreview(); return; } if (!lightbox?.classList.contains("on")) return;        const direction = document.documentElement.dir === "rtl" ? -1 : 1; if (event.key === "ArrowRight") showImage(currentImageIndex + direction); else if (event.key === "ArrowLeft") showImage(currentImageIndex - direction); }); }    function render() { document.documentElement.lang = LANGUAGES[language]; document.documentElement.dir = language === 0 ? "rtl" : "ltr";      $$("[data-k]").forEach((element) => {
+    $("iframe", mobilePreview).src = "about:blank";
+    document.body.style.overflow = "";
+  }
+
+  // ========== لوحة المفاتيح ==========
+  function initializeKeyboardControls() {
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        if (lightbox?.classList.contains("on")) closeLightbox();
+        if (mobilePreview?.classList.contains("on")) closeMobilePreview();
+        return;
+      }
+
+      if (!lightbox?.classList.contains("on")) return;
+
+      const direction = document.documentElement.dir === "rtl" ? -1 : 1;
+
+      if (event.key === "ArrowRight") showImage(currentImageIndex + direction);
+      else if (event.key === "ArrowLeft") showImage(currentImageIndex - direction);
+    });
+  }
+
+  // ========== العرض الرئيسي ==========
+  function render() {
+    document.documentElement.lang = LANGUAGES[language];
+    document.documentElement.dir = language === 0 ? "rtl" : "ltr";
+
+    $$("[data-k]").forEach((element) => {
       element.textContent = translate(element.dataset.k);
     });
 
     if (navigation) {
-      $$(".lk a", navigation).forEach((link) => { const isActive = link.dataset.pg === PAGE; link.classList.toggle("on", isActive); if (isActive) link.setAttribute("aria-current", "page"); else link.removeAttribute("aria-current"); });        $$
-(".lsw button", navigation).forEach((button, index) => {
+      $$(".lk a", navigation).forEach((link) => {
+        const isActive = link.dataset.pg === PAGE;
+        link.classList.toggle("on", isActive);
+        if (isActive) link.setAttribute("aria-current", "page");
+        else link.removeAttribute("aria-current");
+      });
+
+      $$(".lsw button", navigation).forEach((button, index) => {
         const isActive = index === language;
         button.classList.toggle("on", isActive);
         button.setAttribute("aria-pressed", String(isActive));
@@ -739,17 +684,30 @@
     if (closeButton) closeButton.textContent = translate("close");
 
     const page = PAGE_LIST.find((item) => item[0] === PAGE);
-    if (page) {
-      document.title = `KONFOR — ${translate(page[2])}`;
-    }
+    if (page) document.title = `KONFOR — ${translate(page[2])}`;
 
     renderGrid();
-    setWhatsAppLink($("#wal")); }    function initialize() { initializeRevealObserver(); initializeGridObserver();      initializeNavigation(); initializeFooter(); initializeHome(); initializeLightbox(); initializeMobilePreview(); initializeKeyboardControls();      $$(".rv, .ci").forEach(observeReveal);
+    setWhatsAppLink($("#wal"));
+  }
 
-    // Fetch Firestore products then render
-    fetchFirebaseProducts(() => {
-      render();
-    });
+  // ========== التشغيل ==========
+  function initialize() {
+    initializeRevealObserver();
+    initializeGridObserver();
+    initializeNavigation();
+    initializeFooter();
+    initializeHome();
+    initializeLightbox();
+    initializeMobilePreview();
+    initializeKeyboardControls();
+
+    $$(".rv, .ci").forEach(observeReveal);
+
+    // عرض فوري للمحتوى الثابت، حتى لو تأخر Firebase
+    render();
+
+    // ثم تحديث العرض عند وصول منتجات Firestore
+    fetchFirebaseProducts(render);
   }
 
   if (document.readyState === "loading") {
