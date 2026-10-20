@@ -16,43 +16,50 @@
             --border-color: #bae6fd;
             --danger: #ef4444;
         }
-
         * { box-sizing: border-box; font-family: 'Cairo', sans-serif; margin: 0; padding: 0; }
         body { background-color: var(--bg-color); color: var(--text-color); padding: 20px; }
-
         #login-section {
             max-width: 400px; margin: 80px auto; background: var(--card-bg);
             padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.15);
             border: 1px solid var(--border-color);
         }
-
         #dashboard-section { display: none; max-width: 1000px; margin: 0 auto; }
-
         header {
             display: flex; justify-content: space-between; align-items: center;
             background: var(--card-bg); padding: 15px 25px; border-radius: 10px;
             border: 1px solid var(--border-color); margin-bottom: 25px;
         }
-
         h2 { color: var(--sky-blue-dark); }
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 6px; font-weight: 600; }
         input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; outline: none; }
-        input:focus, select:focus { border-color: var(--sky-blue-main); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); }
-
+        input:focus, select:focus, textarea:focus { border-color: var(--sky-blue-main); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); }
         .btn {
             background: var(--sky-blue-main); color: white; border: none; padding: 10px 20px;
             border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.3s;
         }
         .btn:hover { background: var(--sky-blue-dark); }
+        .btn:disabled { opacity: .6; cursor: not-allowed; }
         .btn-danger { background: var(--danger); }
-
+        .btn-gray { background: #64748b; }
         .card { background: var(--card-bg); padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 25px; }
         .table-responsive { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 10px; overflow: hidden; }
         th, td { padding: 12px 15px; text-align: right; border-bottom: 1px solid #f1f5f9; }
         th { background: var(--sky-blue-light); color: var(--sky-blue-dark); }
         img.thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
+
+        .preview { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .pv-item { position: relative; width: 90px; height: 90px; }
+        .pv-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color); }
+        .pv-item button {
+            position: absolute; top: -6px; left: -6px; width: 24px; height: 24px; border-radius: 50%;
+            border: none; background: var(--danger); color: #fff; cursor: pointer; font-size: 14px; line-height: 24px;
+        }
+        .pv-first { position: absolute; bottom: 2px; right: 2px; background: var(--sky-blue-dark); color: #fff; font-size: 10px; padding: 1px 6px; border-radius: 6px; }
+        .hint { font-size: 12px; color: #64748b; margin-top: 4px; }
+        .pdf-box { display: flex; align-items: center; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+        .actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
         @media (max-width: 600px) {
             body { padding: 10px; }
@@ -85,9 +92,9 @@
 
         <div class="card">
             <h3 id="form-title" style="margin-bottom: 15px;">إضافة منتج أو ملف جديد</h3>
-            <form id="product-form">
+            <form id="product-form" onsubmit="return false;">
                 <input type="hidden" id="product-id">
-                
+
                 <div class="form-group">
                     <label>القسم:</label>
                     <select id="product-category" required>
@@ -108,16 +115,23 @@
                 </div>
 
                 <div class="form-group">
-                    <label>اختر صورة من المعرض/الجهاز:</label>
-                    <input type="file" id="product-image" accept="image/*">
+                    <label>الصور (يمكنك اختيار عدة صور، ويمكنك الإضافة على مرات):</label>
+                    <input type="file" id="product-image" accept="image/*" multiple>
+                    <div class="hint">تُضغط الصور تلقائياً. الصورة الأولى هي الصورة الرئيسية للمنتج.</div>
+                    <div class="preview" id="img-preview"></div>
                 </div>
 
                 <div class="form-group">
-                    <label>اختر ملف PDF من الجهاز:</label>
+                    <label>ملف PDF (اختيار ملف جديد يستبدل القديم):</label>
                     <input type="file" id="product-pdf" accept="application/pdf">
+                    <div class="pdf-box" id="pdf-status"></div>
+                    <div class="hint">حجم الملف الكلي (الصور + PDF) يجب ألا يتجاوز نحو 900 كيلوبايت.</div>
                 </div>
 
-                <button type="button" class="btn" onclick="saveProduct()">حفظ البيانات</button>
+                <div class="actions">
+                    <button type="button" class="btn" id="save-btn" onclick="saveProduct()">حفظ البيانات</button>
+                    <button type="button" class="btn btn-gray" onclick="resetForm()">إلغاء / جديد</button>
+                </div>
             </form>
         </div>
 
@@ -138,13 +152,11 @@
         </div>
     </div>
 
-    <!-- مكتبات Firebase المتوافقة (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <script>
-        // إعدادات المشروع الصحيحة والمحدثة من Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyD-bac9kfXCRvLrBR8GrfMn5E4YQ8rl41A",
             authDomain: "konfor-c1128.firebaseapp.com",
@@ -158,6 +170,14 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+
+        const MAX_TOTAL = 900000; // حد آمن تحت 1 ميغابايت
+
+        // حالة النموذج الحالية
+        let currentImages = [];   // مصفوفة صور (data URLs)
+        let currentPdf = "";      // PDF الحالي (data URL)
+        let currentPdfName = "";
+        const productsCache = {};
 
         auth.onAuthStateChanged(user => {
             if (user) {
@@ -175,8 +195,11 @@
             const pass = document.getElementById('login-password').value;
             auth.signInWithEmailAndPassword(email, pass).catch(err => alert("خطأ في تسجيل الدخول: " + err.message));
         }
-
         function logout() { auth.signOut(); }
+
+        function escapeHtml(s) {
+            return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
 
         function readFileAsDataURL(file) {
             return new Promise((resolve, reject) => {
@@ -187,54 +210,168 @@
             });
         }
 
+        // ضغط الصورة: أقصى بعد 1000px وجودة 0.72
+        function compressImage(file, maxSize = 1000, quality = 0.72) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onerror = reject;
+                reader.onload = () => {
+                    const img = new Image();
+                    img.onerror = reject;
+                    img.onload = () => {
+                        let w = img.width, h = img.height;
+                        const ratio = Math.min(1, maxSize / Math.max(w, h));
+                        w = Math.round(w * ratio);
+                        h = Math.round(h * ratio);
+                        const canvas = document.createElement('canvas');
+                        canvas.width = w; canvas.height = h;
+                        const ctx = canvas.getContext('2d');
+                        ctx.fillStyle = "#fff";
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.drawImage(img, 0, 0, w, h);
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    };
+                    img.src = reader.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function totalSize() {
+            return currentImages.reduce((a, b) => a + b.length, 0) + currentPdf.length;
+        }
+
+        function renderPreview() {
+            const box = document.getElementById('img-preview');
+            box.innerHTML = "";
+            currentImages.forEach((src, i) => {
+                const div = document.createElement('div');
+                div.className = 'pv-item';
+                const img = document.createElement('img');
+                img.src = src;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = '×';
+                btn.title = 'حذف الصورة';
+                btn.onclick = () => { currentImages.splice(i, 1); renderPreview(); };
+                div.append(img, btn);
+                if (i === 0) {
+                    const tag = document.createElement('span');
+                    tag.className = 'pv-first';
+                    tag.textContent = 'رئيسية';
+                    div.append(tag);
+                }
+                box.append(div);
+            });
+        }
+
+        function renderPdfStatus() {
+            const box = document.getElementById('pdf-status');
+            box.innerHTML = "";
+            if (!currentPdf) { box.textContent = "لا يوجد ملف PDF"; return; }
+            const kb = Math.round(currentPdf.length / 1024);
+            const span = document.createElement('span');
+            span.textContent = `✔ ملف PDF موجود (${kb} KB)`;
+            const a = document.createElement('a');
+            a.href = currentPdf;
+            a.download = (currentPdfName || "catalog") + ".pdf";
+            a.textContent = "تنزيل";
+            const del = document.createElement('button');
+            del.type = 'button';
+            del.className = 'btn btn-danger';
+            del.style.padding = '4px 12px';
+            del.textContent = 'إزالة PDF';
+            del.onclick = () => { currentPdf = ""; document.getElementById('product-pdf').value = ""; renderPdfStatus(); };
+            box.append(span, a, del);
+        }
+
+        // عند اختيار صور: تُضغط وتُضاف للقائمة
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('product-image').addEventListener('change', async (e) => {
+                const files = Array.from(e.target.files);
+                if (!files.length) return;
+                const btn = document.getElementById('save-btn');
+                btn.disabled = true; btn.textContent = "جاري معالجة الصور...";
+                try {
+                    for (const f of files) {
+                        currentImages.push(await compressImage(f));
+                    }
+                    renderPreview();
+                } catch (err) {
+                    alert("تعذر قراءة إحدى الصور: " + err.message);
+                }
+                e.target.value = "";
+                btn.disabled = false; btn.textContent = "حفظ البيانات";
+            });
+
+            // عند اختيار PDF جديد: يستبدل القديم
+            document.getElementById('product-pdf').addEventListener('change', async (e) => {
+                const f = e.target.files[0];
+                if (!f) return;
+                try {
+                    currentPdf = await readFileAsDataURL(f);
+                    currentPdfName = f.name.replace(/\.pdf$/i, "");
+                    renderPdfStatus();
+                    if (currentPdf.length > MAX_TOTAL) {
+                        alert("ملف PDF كبير (" + Math.round(currentPdf.length / 1024) + " KB) ولن يُحفظ. يجب أن يكون أقل من 900 KB، أو اطلب رفعه إلى Firebase Storage.");
+                    }
+                } catch (err) {
+                    alert("تعذر قراءة الملف: " + err.message);
+                }
+            });
+            renderPdfStatus();
+        });
+
         async function saveProduct() {
             const id = document.getElementById('product-id').value;
-            const title = document.getElementById('product-title').value;
+            const title = document.getElementById('product-title').value.trim();
             const category = document.getElementById('product-category').value;
             const desc = document.getElementById('product-desc').value;
-            const imgFile = document.getElementById('product-image').files[0];
-            const pdfFile = document.getElementById('product-pdf').files[0];
 
             if (!title) return alert("يرجى إدخال اسم المنتج أو الكتالوج!");
 
+            const size = totalSize();
+            if (size > MAX_TOTAL) {
+                return alert("الحجم الكلي " + Math.round(size / 1024) + " KB يتجاوز الحد (900 KB).\nقلّل عدد الصور أو استخدم PDF أصغر.");
+            }
+
+            const btn = document.getElementById('save-btn');
+            btn.disabled = true; btn.textContent = "جاري الحفظ...";
+
             try {
-                let imageUrl = "";
-                let pdfUrl = "";
-
-                if (imgFile) {
-                    imageUrl = await readFileAsDataURL(imgFile);
-                }
-
-                if (pdfFile) {
-                    pdfUrl = await readFileAsDataURL(pdfFile);
-                }
-
                 const data = {
                     title, category, desc,
+                    images: currentImages,
+                    imageUrl: currentImages[0] || "",
                     updatedAt: new Date()
                 };
 
-                if (imageUrl) data.imageUrl = imageUrl;
-                if (pdfUrl) data.pdfUrl = pdfUrl;
-
                 if (id) {
-                    if (!imageUrl) delete data.imageUrl;
-                    if (!pdfUrl) delete data.pdfUrl;
-
+                    data.pdfUrl = currentPdf ? currentPdf : firebase.firestore.FieldValue.delete();
                     await db.collection('products').doc(id).update(data);
                     alert("تم التعديل بنجاح!");
                 } else {
+                    if (currentPdf) data.pdfUrl = currentPdf;
                     data.createdAt = new Date();
                     await db.collection('products').add(data);
                     alert("تمت الإضافة بنجاح!");
                 }
-
-                document.getElementById('product-form').reset();
-                document.getElementById('product-id').value = "";
-                document.getElementById('form-title').innerText = "إضافة منتج أو ملف جديد";
+                resetForm();
             } catch (err) {
                 alert("حدث خطأ: " + err.message);
             }
+            btn.disabled = false; btn.textContent = "حفظ البيانات";
+        }
+
+        function resetForm() {
+            document.getElementById('product-form').reset();
+            document.getElementById('product-id').value = "";
+            document.getElementById('form-title').innerText = "إضافة منتج أو ملف جديد";
+            currentImages = [];
+            currentPdf = "";
+            currentPdfName = "";
+            renderPreview();
+            renderPdfStatus();
         }
 
         function loadProducts() {
@@ -243,19 +380,24 @@
                 list.innerHTML = "";
                 snapshot.forEach(doc => {
                     const item = doc.data();
-                    list.innerHTML += `
-                        <tr>
-                            <td>${item.imageUrl ? `<img src="${item.imageUrl}" class="thumb">` : 'لا يوجد'}</td>
-                            <td><b>${item.title}</b></td>
-                            <td>${getCategoryName(item.category)}</td>
-                            <td>${item.pdfUrl ? `<a href="${item.pdfUrl}" target="_blank" download="file.pdf">تحميل/عرض PDF</a>` : 'لا يوجد'}</td>
-                            <td>
-                                <button class="btn" onclick="editProduct('${doc.id}', '${item.title}', '${item.category}', '${item.desc}')">تعديل</button>
-                                <button class="btn btn-danger" onclick="deleteProduct('${doc.id}')">حذف</button>
-                            </td>
-                        </tr>
-                    `;
+                    productsCache[doc.id] = item;
+                    const imgs = Array.isArray(item.images) && item.images.length ? item.images : (item.imageUrl ? [item.imageUrl] : []);
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${imgs.length ? `<img src="${imgs[0]}" class="thumb"> <small>${imgs.length > 1 ? '(' + imgs.length + ' صور)' : ''}</small>` : 'لا يوجد'}</td>
+                        <td><b>${escapeHtml(item.title)}</b></td>
+                        <td>${getCategoryName(item.category)}</td>
+                        <td>${item.pdfUrl ? `<a href="${item.pdfUrl}" download="${escapeHtml(item.title)}.pdf">تنزيل PDF</a>` : 'لا يوجد'}</td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn" data-edit="${doc.id}">تعديل</button>
+                                <button class="btn btn-danger" data-del="${doc.id}">حذف</button>
+                            </div>
+                        </td>`;
+                    list.appendChild(tr);
                 });
+                list.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => editProduct(b.dataset.edit));
+                list.querySelectorAll('[data-del]').forEach(b => b.onclick = () => deleteProduct(b.dataset.del));
             });
         }
 
@@ -266,11 +408,18 @@
             return key;
         }
 
-        function editProduct(id, title, category, desc, desc) {
+        function editProduct(id) {
+            const item = productsCache[id];
+            if (!item) return;
             document.getElementById('product-id').value = id;
-            document.getElementById('product-title').value = title;
-            document.getElementById('product-category').value = category;
-            document.getElementById('product-desc').value = desc;
+            document.getElementById('product-title').value = item.title || "";
+            document.getElementById('product-category').value = item.category || "furnishings";
+            document.getElementById('product-desc').value = item.desc || "";
+            currentImages = Array.isArray(item.images) && item.images.length ? [...item.images] : (item.imageUrl ? [item.imageUrl] : []);
+            currentPdf = item.pdfUrl || "";
+            currentPdfName = item.title || "catalog";
+            renderPreview();
+            renderPdfStatus();
             document.getElementById('form-title').innerText = "تعديل المنتج الحالي";
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
