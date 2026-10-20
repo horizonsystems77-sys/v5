@@ -84,6 +84,12 @@
           const item = doc.data();
           const { s, u } = detectSection(item);
           const desc = item.desc || "";
+          const imgs =
+            Array.isArray(item.images) && item.images.length
+              ? item.images
+              : item.imageUrl
+              ? [item.imageUrl]
+              : [0];
 
           firebaseProducts.push({
             isFirebase: true,
@@ -92,10 +98,9 @@
             u,
             n: item.title || "منتج جديد",
             d: [desc, desc, desc, desc],
-            imageUrl: item.imageUrl || "",
             pdfUrl: item.pdfUrl || "",
             z: item.size || "",
-            i: item.imageUrl ? [item.imageUrl] : [0],
+            i: imgs,
           });
         });
 
@@ -156,7 +161,6 @@
   }
 
   function getProductImage(product, index = 0, fullSize = false) {
-    if (product.imageUrl) return product.imageUrl;
     const imageId = product.i[index];
     if (
       typeof imageId === "string" &&
@@ -405,7 +409,11 @@
     const badge = createElement(
       "span",
       "bd",
-      product.isFirebase ? "جديد" : `${product.i.length} ${translate("ph")}`
+      product.isFirebase
+        ? product.i.length > 1
+          ? `${product.i.length} ${translate("ph")}`
+          : "جديد"
+        : `${product.i.length} ${translate("ph")}`
     );
 
     imageButton.append(image, badge);
@@ -433,7 +441,7 @@
       pdfLink.style.background = "#0284c7";
       pdfLink.innerHTML = "<span>PDF</span>";
       pdfLink.href = product.pdfUrl;
-      pdfLink.target = "_blank";
+      pdfLink.download = productName(product) + ".pdf";
       pdfLink.rel = "noopener noreferrer";
       info.append(pdfLink);
     }
