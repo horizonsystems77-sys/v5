@@ -66,6 +66,28 @@
     return { s, u };
   }
 
+  // تبديل ملف PDF الخاص بالقسم (الزر الأصلي أعلى الصفحة) من لوحة التحكم
+  function loadCatalogs() {
+    if (typeof firebase === "undefined") return;
+    const btn = document.querySelector("a.dl");
+    if (!btn) return;
+
+    firebase
+      .firestore()
+      .collection("catalogs")
+      .doc(PAGE)
+      .onSnapshot(
+        (doc) => {
+          const data = doc.exists ? doc.data() : null;
+          if (data && data.pdfUrl) {
+            btn.href = data.pdfUrl;
+            btn.setAttribute("download", (data.name || "catalog") + ".pdf");
+          }
+        },
+        (err) => console.error("Catalog error:", err)
+      );
+  }
+
   function fetchFirebaseProducts(onReady) {
     if (typeof firebase === "undefined") {
       console.error("Firebase library not loaded");
@@ -98,7 +120,6 @@
             u,
             n: item.title || "منتج جديد",
             d: [desc, desc, desc, desc],
-            pdfUrl: item.pdfUrl || "",
             z: item.size || "",
             i: imgs,
           });
@@ -435,17 +456,6 @@
     buyLink.rel = "noopener noreferrer";
     info.append(buyLink);
 
-    if (product.pdfUrl) {
-      const pdfLink = createElement("a", "buy");
-      pdfLink.style.marginInlineStart = "8px";
-      pdfLink.style.background = "#0284c7";
-      pdfLink.innerHTML = "<span>PDF</span>";
-      pdfLink.href = product.pdfUrl;
-      pdfLink.download = productName(product) + ".pdf";
-      pdfLink.rel = "noopener noreferrer";
-      info.append(pdfLink);
-    }
-
     card.append(imageButton, info);
     return card;
   }
@@ -716,6 +726,9 @@
 
     // ثم تحديث العرض عند وصول منتجات Firestore
     fetchFirebaseProducts(render);
+
+    // تبديل كتالوج PDF الخاص بالقسم
+    loadCatalogs();
   }
 
   if (document.readyState === "loading") {
