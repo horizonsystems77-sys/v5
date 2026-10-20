@@ -1,61 +1,760 @@
-(()=>{
-const LG=['ar','en','tr','fr'],WA='963991310740',PG=document.body.dataset.p;
-let L=0;try{const s=localStorage.getItem('kl');if(LG.includes(s))L=LG.indexOf(s)}catch(e){}
-const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
-const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
-const tx=k=>K[k]?K[k][L]:k;
-const FL='<svg width="30" height="30" viewBox="-36 -36 72 72" fill="currentColor"><path d="M0-3C-11-11-10-26 0-33C10-26 11-11 0-3Z"/><path transform="rotate(72)" d="M0-3C-11-11-10-26 0-33C10-26 11-11 0-3Z"/><path transform="rotate(144)" d="M0-3C-11-11-10-26 0-33C10-26 11-11 0-3Z"/><path transform="rotate(216)" d="M0-3C-11-11-10-26 0-33C10-26 11-11 0-3Z"/><path transform="rotate(288)" d="M0-3C-11-11-10-26 0-33C10-26 11-11 0-3Z"/></svg>';
-const WI='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.4A10 10 0 1 0 12 2zm5.3 13.8c-.2.6-1.300 1.200-1.800 1.200-.5.1-1 .2-3.300-.7-2.800-1.200-4.600-4-4.700-4.200-.1-.2-1.100-1.500-1.100-2.800s.7-2 1-2.300c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.200c.1.2.1.4 0 .5l-.4.6c-.1.2-.3.3-.1.6.2.3.8 1.300 1.700 2.100 1.200 1 2.200 1.300 2.500 1.500.3.1.4.1.6-.1l.8-1c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.2.1.8-.1 1.400z"/></svg>';
-const PAGES=[['home','index.html','nav.home'],['mf','bedding.html','t.mf'],['hm','home.html','t.hm'],['of','office.html','t.of'],['ct','contact.html','t.ct']];
-const SUBS={mf:['beds','mattresses'],hm:['bedroom','dining','sitting','tables'],of:['exec','work','ops','meet','recep','store','school','seat']};
-const F={mf:'all',hm:'all',of:'all'};
-let cur=null,ix=0;
-// nav
-const nav=el('nav');
-nav.innerHTML='<a class="logo" href="index.html" aria-label="KONFOR">'+FL+'<span>KONFOR</span></a><div class="menu" id="menu"><div class="lk"></div><div class="lw"><span data-k="lang"></span><div class="lsw"><i></i></div></div><a class="nb" href="contact.html"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></span><span data-k="h.b2"></span></a></div><button class="bg" id="bg" aria-label="menu">☰</button>';
-PAGES.forEach(([k,h,t])=>{const a=el('a');a.href=h;a.dataset.k=t;a.dataset.pg=k;$('.lk',nav).append(a)});
-['عربي','EN','TR','FR'].forEach((n,i)=>{const b=el('button','',n);b.onclick=()=>{L=i;try{localStorage.setItem('kl',LG[i])}catch(e){}render()};$('.lsw',nav).append(b)});
-document.body.prepend(nav);
-$('#bg',nav).onclick=()=>$('#menu',nav).classList.toggle('open');
-$$('.lk a',nav).forEach(a=>a.onclick=()=>$('#menu',nav).classList.remove('open'));
-const sol=()=>nav.classList.toggle('solid',PG!=='home'||scrollY>60);sol();addEventListener('scroll',sol,{passive:true});
-const ft=el('footer','','© KONFOR · ALKURDI GROUP');document.body.append(ft);
-const nm=p=>Array.isArray(p.n)?p.n[L]:p.n;
-const buyUrl=p=>'https://wa.me/'+WA+'?text='+encodeURIComponent(tx('msg').replace('{n}',nm(p)).replace('{c}',tx('t.'+p.s)));
-// home collections
-if(PG==='home'){const g=$('#cc');['mf','hm','of'].forEach(s=>{const p=P.find(x=>x.s===s);const a=el('a','cc rv');a.href=PAGES.find(x=>x[0]===s)[1];const i=el('img');i.src='images/t/'+p.i[0]+'.webp';i.alt='';i.loading='lazy';const b=el('b','','→');const d=el('div');const h=el('h3');h.dataset.k='t.'+s;const q=el('p');q.dataset.k='s.'+s;d.append(h,q);a.append(i,b,d);g.append(a)});
- const hv=$('#hv');hv.addEventListener('error',()=>hv.remove());hv.play&&hv.play().catch(()=>{})}
-// product pages
-function grid(){
- const ch=$('#chips'),g=$('#grid');if(!ch)return;ch.replaceChildren();g.replaceChildren();
- ['all',...SUBS[PG]].forEach(u=>{const b=el('button',F[PG]===u?'on':'',tx('u.'+u));b.onclick=()=>{F[PG]=u;grid()};ch.append(b)});
- const o=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');o.unobserve(e.target)}}),{threshold:.1});
- P.filter(p=>p.s===PG&&(F[PG]==='all'||p.u===F[PG])).forEach((p,n)=>{
-  const c=el('article','card');c.style.transitionDelay=(n%3)*90+'ms';
-  const cv=el('button','cv');cv.setAttribute('aria-label',nm(p));const im=el('img');im.src='images/t/'+p.i[0]+'.webp';im.alt=nm(p);im.loading='lazy';im.decoding='async';im.width=440;im.height=330;cv.append(im,el('span','bd',p.i.length+' '+tx('ph')));cv.onclick=()=>open(p);
-  const f=el('div','info');f.append(el('h3','',nm(p)),el('p','d',p.d?p.d[L]:OD[p.u][L]));if(p.z)f.append(el('p','z',p.z));
-  const a=el('a','buy');a.innerHTML=WI;a.append(el('span','',tx('buy')));a.href=buyUrl(p);a.target='_blank';a.rel='noopener noreferrer';f.append(a);
-  c.append(cv,f);g.append(c);o.observe(c)})}
-function contact(){const a=$('#wal');if(a)a.href='https://wa.me/'+WA}
-// lightbox
-const lb=el('div');lb.id='lb';lb.setAttribute('role','dialog');lb.innerHTML='<button id="cl" aria-label="close">×</button><div class="m"><button class="ar2" id="pv" aria-label="prev">‹</button><img id="bi" alt=""><button class="ar2" id="nx" aria-label="next">›</button></div><div class="t"><b id="lt"></b><span id="ld"></span><a class="buy" id="lbb" target="_blank" rel="noopener noreferrer"></a></div><div class="th" id="th"></div>';document.body.append(lb);
-function open(p){cur=p;$('#lt').textContent=nm(p);$('#ld').textContent=p.d?p.d[L]:OD[p.u][L];const b=$('#lbb');b.replaceChildren();b.insertAdjacentHTML('afterbegin',WI);b.append(el('span','',tx('buy')));b.href=buyUrl(p);
- const th=$('#th');th.replaceChildren();p.i.forEach((id,k)=>{const i=el('img');i.src='images/t/'+id+'.webp';i.alt='';i.onclick=()=>show(k);th.append(i)});show(0);lb.classList.add('on');document.body.style.overflow='hidden'}
-function show(k){ix=(k+cur.i.length)%cur.i.length;const bi=$('#bi');bi.style.animation='none';bi.offsetWidth;bi.style.animation='';bi.src='images/f/'+cur.i[ix]+'.webp';bi.alt=nm(cur);new Image().src='images/f/'+cur.i[(ix+1)%cur.i.length]+'.webp';$$('#th img').forEach((e,j)=>e.classList.toggle('on',j===ix))}
-function shut(){lb.classList.remove('on');document.body.style.overflow=''}
-$('#cl').onclick=shut;$('#pv').onclick=()=>show(ix-1);$('#nx').onclick=()=>show(ix+1);lb.onclick=e=>{if(e.target===lb)shut()};
-addEventListener('keydown',e=>{if(e.key==='Escape'){shut();mv.classList.remove('on')}if(!lb.classList.contains('on'))return;const r=document.documentElement.dir==='rtl'?-1:1;if(e.key==='ArrowRight')show(ix+r);if(e.key==='ArrowLeft')show(ix-r)});
-// mobile preview (desktop only)
-const mv=el('div');mv.id='mv';
-if(self===top){const vm=el('button');vm.id='vm';document.body.append(vm);mv.innerHTML='<button id="mx"></button><div class="ph2"><iframe title="mobile"></iframe></div>';document.body.append(mv);
- vm.onclick=()=>{$('iframe',mv).src=location.href;mv.classList.add('on')};$('#mx',mv).onclick=()=>{mv.classList.remove('on');$('iframe',mv).src='about:blank'}}
-function render(){
- document.documentElement.lang=LG[L];document.documentElement.dir=L?'ltr':'rtl';
- $$('[data-k]').forEach(e=>e.textContent=tx(e.dataset.k));
- $$('.lk a',nav).forEach(a=>a.classList.toggle('on',a.dataset.pg===PG));
- $$('.lsw button',nav).forEach((b,i)=>b.classList.toggle('on',i===L));$('.lsw i',nav).style.transform='translateX('+L*42+'px)';
- const vm=$('#vm');if(vm)vm.textContent=tx('vm');const mx=$('#mx');if(mx)mx.textContent=tx('close');
- document.title='KONFOR — '+tx(PAGES.find(x=>x[0]===PG)[2]);grid();contact()}
-render();
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});$$('.rv,.ci').forEach(e=>io.observe(e));
+(() => {
+  "use strict";
+
+  // Configuration
+  const LANGUAGES = ["ar", "en", "tr", "fr"];
+  const WHATSAPP_NUMBER = "963991310740";
+  const PAGE = document.body.dataset.p || "home";
+
+  // Reuse the data supplied by the existing website scripts.
+  const TRANSLATIONS =
+    typeof K !== "undefined" && K ? K : {};
+
+  const PRODUCTS =
+    typeof P !== "undefined" && Array.isArray(P) ? P : [];
+
+  const DESCRIPTIONS =
+    typeof OD !== "undefined" && OD ? OD : {};
+
+  const PAGE_LIST = [
+    ["home", "index.html", "nav.home"],
+    ["mf", "bedding.html", "t.mf"],
+    ["hm", "home.html", "t.hm"],
+    ["of", "office.html", "t.of"],
+    ["ct", "contact.html", "t.ct"],
+  ];
+
+  const SUBCATEGORIES = {
+    mf: ["beds", "mattresses"], 
+    hm: ["bedroom", "dining", "sitting", "tables"],
+    of: [
+      "exec",
+      "work",
+      "ops",
+      "meet",
+      "recep",
+      "store",
+      "school",
+      "seat",
+    ],
+  };
+
+  const FILTERS = {
+    mf: "all",
+    hm: "all",
+    of: "all",
+  };
+
+  let language = 0;
+  let currentProduct = null;
+  let currentImageIndex = 0;
+  let observer = null;
+  let revealObserver = null;
+  let mobilePreview = null;
+  let lightbox = null;
+  let navigation = null;
+
+  // Firebase Integration for Admin Panel Products
+  const firebaseConfig = {
+      apiKey: "AIzaSyD-bac9kfXCRvLrBR8GrfMn5E4YQ8rl41A",
+      authDomain: "konfor-c1128.firebaseapp.com",
+      projectId: "konfor-c1128",
+      storageBucket: "konfor-c1128.firebasestorage.app",
+      messagingSenderId: "986871870236",
+      appId: "1:986871870236:web:22d2216996e46c978480d9",
+      measurementId: "G-Z0975DMLLK"
+  };
+
+  if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+  }
+
+  function fetchFirebaseProducts(onReady) {
+      if (typeof firebase === 'undefined') {
+          if (onReady) onReady();
+          return;
+      }
+      const db = firebase.firestore();
+      db.collection('products').onSnapshot(snapshot => {
+          const staticProducts = PRODUCTS.filter(p => !p.isFirebase);
+          const firebaseProducts = [];
+
+          snapshot.forEach(doc => {
+              const item = doc.data();
+              let s = "mf";
+              let u = "beds";
+              const cat = (item.category || "").toLowerCase();
+              if (cat.includes("home") || cat.includes("hm") || cat.includes("منزلية")) {
+                  s = "hm";
+                  u = "bedroom";
+              } else if (cat.includes("office") || cat.includes("of") || cat.includes("مكتبي")) {
+                  s = "of";
+                  u = "exec";
+              }
+
+              firebaseProducts.push({
+                  isFirebase: true,
+                  id: doc.id,
+                  s: s,
+                  u: u,
+                  n: item.title || "منتج جديد",
+                  d: [item.desc || "", item.desc || "", item.desc || "", item.desc || ""],
+                  imageUrl: item.imageUrl || "",
+                  pdfUrl: item.pdfUrl || "",
+                  z: item.size || "",
+                  i: item.imageUrl ? [item.imageUrl] : [0]
+              });
+          });
+
+          PRODUCTS.length = 0;
+          PRODUCTS.push(...firebaseProducts, ...staticProducts);
+
+          if (onReady) onReady();
+      }, err => {
+          console.error("Firestore error:", err);
+          if (onReady) onReady();
+      });
+  }
+
+  // Safely restore the preferred language.
+  try {
+    const savedLanguage = localStorage.getItem("kl");
+    const savedIndex = LANGUAGES.indexOf(savedLanguage);
+
+    if (savedIndex !== -1) {
+      language = savedIndex;
+    }
+  } catch {
+    // Storage may be unavailable in restricted browser contexts.
+  }
+
+  // DOM helpers
+  const $ = (selector, root = document) => root.querySelector(selector);    const $$ = (selector, root = document) =>
+    Array.from(root.querySelectorAll(selector));
+
+  function createElement(tag, className = "", text = null) {
+    const element = document.createElement(tag);
+
+    if (className) {
+      element.className = className;
+    }
+
+    if (text !== null && text !== undefined) {
+      element.textContent = String(text);
+    }
+
+    return element;
+  }
+
+  function translate(key) {
+    const value = TRANSLATIONS[key];
+
+    if (Array.isArray(value)) {
+      return value[language] ?? value[0] ?? key;
+    }
+
+    return value ?? key;
+  }
+
+  function localizedValue(value, fallback = "") {
+    if (Array.isArray(value)) {
+      return value[language] ?? value[0] ?? fallback;
+    }
+
+    return value ?? fallback;
+  }
+
+  function productName(product) {
+    return localizedValue(product.n, "Product");
+  }
+
+  function productDescription(product) {
+    return localizedValue(
+      product.d,
+      localizedValue(
+        DESCRIPTIONS[product.u],
+        ""
+      )
+    );
+  }
+
+  function categoryName(product) {
+    return translate(`t.${product.s}`);
+  }
+
+  function getProductImage(product, index = 0, fullSize = false) {
+    if (product.imageUrl) {
+      return product.imageUrl;
+    }
+    const imageId = product.i[index];
+    if (typeof imageId === 'string' && (imageId.startsWith('data:') || imageId.startsWith('http'))) {
+      return imageId;
+    }
+    return `images/${fullSize ? "f" : "t"}/${encodeURIComponent(imageId)}.webp`;
+  }
+
+  function observeReveal(element) {
+    if (revealObserver) {
+      revealObserver.observe(element);
+    } else {
+      element.classList.add("in");
+    }
+  }
+
+  // Static SVG icons.
+  const FLOWER_ICON = `
+    <svg width="30" height="30"
+      viewBox="-36 -36 72 72" fill="currentColor"
+      aria-hidden="true">
+      <path d="M0-3C-11-11-10-26 0-33C10-26 11-11 0-3Z"/>
+      <path transform="rotate(72)"
+        d="M0-3C-11-11-10-26 0-33C10-26 11-11 0-3Z"/>
+      <path transform="rotate(144)"
+        d="M0-3C-11-11-10-26 0-33C10-26 11-11 0-3Z"/>
+      <path transform="rotate(216)"
+        d="M0-3C-11-11-10-26 0-33C10-26 11-11 0-3Z"/>
+      <path transform="rotate(288)"
+        d="M0-3C-11-11-10-26 0-33C10-26 11-11 0-3Z"/>
+    </svg>
+  `;
+
+  const WHATSAPP_ICON = `
+    <svg viewBox="0 0 24 24" fill="currentColor"
+      aria-hidden="true">
+      <path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.4A10 10 0 1 0 12 2zm5.3 13.8c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.2c.1.2.1.4 0 .5l-.4.6c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.2 1.3 2.5 1.5.3.1.4.1.6-.1l.8-1c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.2.1.8-.1 1.4z"/>
+    </svg>
+  `;
+
+  function createWhatsAppURL(product) {
+    const message = translate("msg")
+      .replace("{n}", productName(product))
+      .replace("{c}", categoryName(product));
+
+    return (
+      `https://wa.me/${WHATSAPP_NUMBER}` +
+      `?text=${encodeURIComponent(message)}`
+    );
+  }
+
+  function setWhatsAppLink(element) {
+    if (element) {
+      element.href = `https://wa.me/${WHATSAPP_NUMBER}`;
+    }
+  }
+
+  // Navigation
+  function initializeNavigation() {
+    navigation = createElement("nav");
+
+    navigation.innerHTML = `
+      <a class="logo" href="index.html" aria-label="KONFOR">
+        ${FLOWER_ICON}
+        <span>KONFOR</span>
+      </a>
+
+      <div class="menu" id="menu">
+        <div class="lk"></div>
+
+        <div class="lw">
+          <span data-k="lang"></span>
+          <div class="lsw" aria-label="Language selector"></div>
+        </div>
+
+        <a class="nb" href="contact.html">
+          <span class="ic">
+            <svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round"
+              aria-hidden="true">
+              <path d="M7 17L17 7M8 7h9v9"/>
+            </svg>
+          </span>
+          <span data-k="h.b2"></span>
+        </a>
+      </div>
+
+      <button class="bg" id="bg"
+        type="button" aria-label="Open menu"
+        aria-controls="menu" aria-expanded="false">
+        ☰
+      </button>
+    `;
+
+    const links = $(".lk", navigation);
+    const languageSwitcher = $(".lsw", navigation);
+
+    PAGE_LIST.forEach(([key, href, translationKey]) => {
+      const link = createElement("a");
+
+      link.href = href;
+      link.dataset.k = translationKey;
+      link.dataset.pg = key;
+
+      links.append(link);
+    }); 
+
+    ["عربي", "EN", "TR", "FR"].forEach((label, index) => {
+      const button = createElement("button", "", label);
+
+      button.type = "button";
+      button.setAttribute("aria-pressed", "false");
+      button.addEventListener("click", () => {
+        language = index;
+
+        try {
+          localStorage.setItem("kl", LANGUAGES[index]);
+        } catch {}
+
+        render();
+      });
+
+      languageSwitcher.append(button);
+    });
+
+    document.body.prepend(navigation);
+
+    const menuButton = $("#bg", navigation);
+    const menu = $("#menu", navigation);      menuButton.addEventListener("click", () => { const isOpen = menu.classList.toggle("open"); menuButton.setAttribute("aria-expanded", String(isOpen)); });      $$(".lk a", navigation).forEach((link) => {
+      link.addEventListener("click", () => {
+        closeMenu();
+      });
+    });
+
+    document.addEventListener("click", (event) => {
+      if (
+        menu.classList.contains("open") &&
+        !navigation.contains(event.target)
+      ) {
+        closeMenu();
+      }
+    });
+
+    function closeMenu() {
+      menu.classList.remove("open");
+      menuButton.setAttribute("aria-expanded", "false");
+    }
+
+    function updateNavigationStyle() {
+      navigation.classList.toggle(
+        "solid",
+        PAGE !== "home" || window.scrollY > 60
+      );
+    }
+
+    updateNavigationStyle();
+    window.addEventListener("scroll", updateNavigationStyle, { passive: true });
+  }
+
+  function initializeFooter() {
+    const footer = createElement("footer", "", "© KONFOR · ALKURDI GROUP");
+    document.body.append(footer);
+  }
+
+  function initializeHome() {
+    const collectionGrid = $("#cc");
+
+    if (collectionGrid) {
+      ["mf", "hm", "of"].forEach((category) => {
+        const product = PRODUCTS.find(
+          (item) => item.s === category
+        );
+
+        const page = PAGE_LIST.find(
+          (item) => item[0] === category
+        );
+
+        if (!product || !product.i?.length || !page) {
+          return;
+        }
+
+        const link = createElement("a", "cc rv");
+        link.href = page[1];
+
+        const image = createElement("img");
+        image.src = getProductImage(product);
+        image.alt = "";
+        image.loading = "lazy";
+        image.decoding = "async";
+
+        const arrow = createElement("b", "", "→");
+        arrow.setAttribute("aria-hidden", "true");
+
+        const content = createElement("div");
+
+        const heading = createElement("h3");
+        heading.dataset.k = `t.${category}`;
+
+        const description = createElement("p");
+        description.dataset.k = `s.${category}`;
+
+        content.append(heading, description);
+        link.append(image, arrow, content);
+        collectionGrid.append(link);
+
+        observeReveal(link);
+      });
+    }
+
+    const heroVideo = $("#hv");
+    if (heroVideo) {
+      heroVideo.addEventListener("error", () => heroVideo.remove(), { once: true });
+      if (typeof heroVideo.play === "function") {
+        const playback = heroVideo.play();
+        if (playback && typeof playback.catch === "function") {
+          playback.catch(() => {});
+        }
+      }
+    }
+  }
+
+  function initializeRevealObserver() {
+    if (!("IntersectionObserver" in window)) {
+      revealObserver = null;
+      return;
+    }
+
+    revealObserver = new IntersectionObserver(
+      (entries, observerInstance) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+            observerInstance.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+  }
+
+  function initializeGridObserver() {
+    if (!("IntersectionObserver" in window)) {
+      observer = null;
+      return;
+    }
+
+    observer = new IntersectionObserver(
+      (entries, observerInstance) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+            observerInstance.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+  }
+
+  function buildProductCard(product, index) {
+    const card = createElement("article", "card");
+    card.style.transitionDelay = `${(index % 3) * 90}ms`;
+
+    const imageButton = createElement("button", "cv");
+    imageButton.type = "button";
+    imageButton.setAttribute("aria-label", productName(product));
+
+    const image = createElement("img");
+    image.src = getProductImage(product);
+    image.alt = productName(product);
+    image.loading = "lazy";
+    image.decoding = "async";
+    image.width = 440;
+    image.height = 330;
+
+    image.addEventListener("error", () => {
+      imageButton.classList.add("image-error");
+    }, { once: true });
+
+    const badge = createElement(
+      "span",
+      "bd",
+      product.isFirebase ? "جديد" : `${product.i.length} ${translate("ph")}`
+    );
+
+    imageButton.append(image, badge);
+    imageButton.addEventListener("click", () => openLightbox(product));
+
+    const info = createElement("div", "info");
+
+    info.append(
+      createElement("h3", "", productName(product)),
+      createElement("p", "d", productDescription(product))
+    );
+
+    if (product.z) {
+      info.append(createElement("p", "z", product.z));
+    }
+
+    const buyLink = createElement("a", "buy");
+    buyLink.innerHTML = WHATSAPP_ICON;
+    buyLink.append(createElement("span", "", translate("buy")));
+    buyLink.href = createWhatsAppURL(product);
+    buyLink.target = "_blank";
+    buyLink.rel = "noopener noreferrer";
+
+    info.append(buyLink);
+
+    if (product.pdfUrl) {
+      const pdfLink = createElement("a", "buy");
+      pdfLink.style.marginInlineStart = "8px";
+      pdfLink.style.background = "#0284c7";
+      pdfLink.innerHTML = `<span>PDF</span>`;
+      pdfLink.href = product.pdfUrl;
+      pdfLink.target = "_blank";
+      pdfLink.rel = "noopener noreferrer";
+      info.append(pdfLink);
+    }
+
+    card.append(imageButton, info);
+    return card;
+  }
+
+  function renderGrid() {
+    const chips = $("#chips");
+    const grid = $("#grid");
+
+    if (!chips || !grid) {
+      return;
+    }
+
+    if (observer) {
+      observer.disconnect();
+    }
+
+    chips.replaceChildren();
+    grid.replaceChildren();
+
+    const categories = ["all", ...(SUBCATEGORIES[PAGE] || [])];
+
+    categories.forEach((category) => {
+      const button = createElement(
+        "button",
+        FILTERS[PAGE] === category ? "on" : "",
+        translate(`u.${category}`)
+      );
+
+      button.type = "button";
+      button.setAttribute("aria-pressed", String(FILTERS[PAGE] === category));
+
+      button.addEventListener("click", () => {
+        FILTERS[PAGE] = category;
+        renderGrid();
+      });
+
+      chips.append(button);
+    });
+
+    const filteredProducts = PRODUCTS.filter(
+      (product) =>
+        product.s === PAGE &&
+        (FILTERS[PAGE] === "all" ||
+          product.u === FILTERS[PAGE])
+    );
+
+    filteredProducts.forEach((product, index) => {
+      if (!Array.isArray(product.i) || product.i.length === 0) {
+        return;
+      }
+
+      const card = buildProductCard(product, index);
+      grid.append(card);
+
+      if (observer) {
+        observer.observe(card);
+      } else {
+        card.classList.add("in");
+      }
+    });
+  }
+
+  function initializeLightbox() {
+    lightbox = createElement("div");
+    lightbox.id = "lb";
+    lightbox.setAttribute("role", "dialog");
+    lightbox.setAttribute("aria-modal", "true");
+    lightbox.setAttribute("aria-label", "Product gallery");
+
+    lightbox.innerHTML = `
+      <button id="cl" type="button" aria-label="Close">×</button>
+
+      <div class="m">
+        <button class="ar2" id="pv" type="button" aria-label="Previous image">‹</button>
+        <img id="bi" alt="">
+        <button class="ar2" id="nx" type="button" aria-label="Next image">›</button>
+      </div>
+
+      <div class="t">
+        <b id="lt"></b>
+        <span id="ld"></span>
+        <a class="buy" id="lbb" target="_blank" rel="noopener noreferrer"></a>
+      </div>
+
+      <div class="th" id="th"></div>
+    `;
+
+    document.body.append(lightbox);
+
+    $("#cl", lightbox).addEventListener("click", closeLightbox);
+    $("#pv", lightbox).addEventListener("click", () => showImage(currentImageIndex - 1));
+    $("#nx", lightbox).addEventListener("click", () => showImage(currentImageIndex + 1));
+
+    lightbox.addEventListener("click", (event) => {
+      if (event.target === lightbox) {
+        closeLightbox();
+      }
+    });
+  }
+
+  function openLightbox(product) {
+    if (!product?.i?.length || !lightbox) {
+      return;
+    }
+
+    currentProduct = product;
+    $("#lt", lightbox).textContent = productName(product);
+    $("#ld", lightbox).textContent = productDescription(product);
+
+    const buyLink = $("#lbb", lightbox);
+    buyLink.replaceChildren();
+    buyLink.insertAdjacentHTML("afterbegin", WHATSAPP_ICON);
+    buyLink.append(createElement("span", "", translate("buy")));
+    buyLink.href = createWhatsAppURL(product);
+
+    const thumbnails = $("#th", lightbox);
+    thumbnails.replaceChildren();
+
+    product.i.forEach((imageId, index) => {
+      const thumbnail = createElement("img");
+      thumbnail.src = getProductImage(product, index);
+      thumbnail.alt = `${productName(product)} — ${index + 1}`;
+      thumbnail.loading = "lazy";
+      thumbnail.tabIndex = 0;
+
+      thumbnail.addEventListener("click", () => showImage(index));
+      thumbnail.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          showImage(index);
+        }
+      });
+
+      thumbnails.append(thumbnail);
+    });
+
+    showImage(0);
+    lightbox.classList.add("on");
+    document.body.style.overflow = "hidden";
+    $("#cl", lightbox).focus();
+  }
+
+  function showImage(index) {
+    if (!currentProduct?.i?.length || !lightbox) {
+      return;
+    }
+
+    const imageCount = currentProduct.i.length;
+    currentImageIndex = ((index % imageCount) + imageCount) % imageCount;
+
+    const image = $("#bi", lightbox);
+    image.style.animation = "none";
+    void image.offsetWidth;
+    image.style.animation = "";
+
+    image.src = getProductImage(currentProduct, currentImageIndex, true);
+    image.alt = `${productName(currentProduct)} — ${currentImageIndex + 1} / ${imageCount}`;
+
+    $$("#th img", lightbox).forEach((thumbnail, thumbnailIndex) => {
+      const isActive = thumbnailIndex === currentImageIndex;
+      thumbnail.classList.toggle("on", isActive);
+      if (isActive) {
+        thumbnail.setAttribute("aria-current", "true");
+      } else {
+        thumbnail.removeAttribute("aria-current");
+      }
+    });
+  }
+
+  function closeLightbox() {
+    if (!lightbox) return;
+    lightbox.classList.remove("on");
+    document.body.style.overflow = "";
+    currentProduct = null;
+  }
+
+  function initializeMobilePreview() {
+    if (window.self !== window.top) return;
+
+    const previewButton = createElement("button");
+    previewButton.id = "vm";
+    previewButton.type = "button";
+    previewButton.addEventListener("click", openMobilePreview);
+
+    mobilePreview = createElement("div");
+    mobilePreview.id = "mv";
+    mobilePreview.innerHTML = `
+      <button id="mx" type="button"></button>
+      <div class="ph2"><iframe title="Mobile website preview"></iframe></div>
+    `;
+
+    document.body.append(previewButton, mobilePreview);
+    $("#mx", mobilePreview).addEventListener("click", closeMobilePreview);
+    mobilePreview.addEventListener("click", (event) => {
+      if (event.target === mobilePreview) closeMobilePreview();
+    });
+  }
+
+  function openMobilePreview() {
+    if (!mobilePreview) return;
+    const iframe = $("iframe", mobilePreview);
+    iframe.src = window.location.href;
+    mobilePreview.classList.add("on");
+    document.body.style.overflow = "hidden";
+    $("#mx", mobilePreview).focus();
+  }
+
+  function closeMobilePreview() {
+    if (!mobilePreview) return;
+    mobilePreview.classList.remove("on");
+    $("iframe", mobilePreview).src = "about:blank"; document.body.style.overflow = ""; }    function initializeKeyboardControls() { document.addEventListener("keydown", (event) => { if (event.key === "Escape") { if (lightbox?.classList.contains("on")) closeLightbox(); if (mobilePreview?.classList.contains("on")) closeMobilePreview(); return; } if (!lightbox?.classList.contains("on")) return;        const direction = document.documentElement.dir === "rtl" ? -1 : 1; if (event.key === "ArrowRight") showImage(currentImageIndex + direction); else if (event.key === "ArrowLeft") showImage(currentImageIndex - direction); }); }    function render() { document.documentElement.lang = LANGUAGES[language]; document.documentElement.dir = language === 0 ? "rtl" : "ltr";      $$("[data-k]").forEach((element) => {
+      element.textContent = translate(element.dataset.k);
+    });
+
+    if (navigation) {
+      $$(".lk a", navigation).forEach((link) => { const isActive = link.dataset.pg === PAGE; link.classList.toggle("on", isActive); if (isActive) link.setAttribute("aria-current", "page"); else link.removeAttribute("aria-current"); });        $$
+(".lsw button", navigation).forEach((button, index) => {
+        const isActive = index === language;
+        button.classList.toggle("on", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+
+      const indicator = $(".lsw i", navigation);
+      if (indicator) {
+        indicator.style.transform = `translateX(${language * 42}px)`;
+      }
+    }
+
+    const previewButton = $("#vm");
+    const closeButton = $("#mx");
+    if (previewButton) previewButton.textContent = translate("vm");
+    if (closeButton) closeButton.textContent = translate("close");
+
+    const page = PAGE_LIST.find((item) => item[0] === PAGE);
+    if (page) {
+      document.title = `KONFOR — ${translate(page[2])}`;
+    }
+
+    renderGrid();
+    setWhatsAppLink($("#wal")); }    function initialize() { initializeRevealObserver(); initializeGridObserver();      initializeNavigation(); initializeFooter(); initializeHome(); initializeLightbox(); initializeMobilePreview(); initializeKeyboardControls();      $$(".rv, .ci").forEach(observeReveal);
+
+    // Fetch Firestore products then render
+    fetchFirebaseProducts(() => {
+      render();
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initialize, { once: true });
+  } else {
+    initialize();
+  }
 })();
