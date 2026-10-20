@@ -1,124 +1,151 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="referrer" content="no-referrer">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com https://db.onlinewebfonts.com; img-src 'self' data: https:; media-src 'self' https://d8j0ntlcm91z4.cloudfront.net; frame-src 'self'; connect-src 'self' https://firestore.googleapis.com https://*.firebaseio.com https://*.googleapis.com; base-uri 'none'; form-action 'none'">
-    <title>KONFOR</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&family=Tajawal:wght@200;300;400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com https://db.onlinewebfonts.com; img-src 'self' data: https:; media-src 'self' https://d8j0ntlcm91z4.cloudfront.net; frame-src 'self'; connect-src 'self' https://firestore.googleapis.com https://*.firebaseio.com https://*.googleapis.com; base-uri 'none'; form-action 'none'">
+<title>KONFOR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&family=Tajawal:wght@200;300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+    /* تنسيق كروت المنتجات لتتناسب مع تصميم KONFOR */
+    .fb-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    .fb-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+    .fb-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    .fb-card h3 {
+        font-family: 'Tajawal', sans-serif;
+        font-size: 1.2rem;
+        margin: 0;
+        color: #fff;
+    }
+    .fb-card p {
+        font-family: 'Tajawal', sans-serif;
+        font-size: 0.95rem;
+        color: #ccc;
+        margin: 0;
+        line-height: 1.4;
+    }
+    .fb-card .btn-pdf {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: #ffffff;
+        color: #000;
+        padding: 8px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-top: auto;
+        transition: background 0.2s;
+    }
+    .fb-card .btn-pdf:hover {
+        background: #e0e0e0;
+    }
+</style>
 </head>
 <body data-p="home">
+<div class="hw"><section class="hs"><video class="hv" id="hv" autoplay muted loop playsinline preload="auto" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260428_193507_4286c423-2fd9-4efd-92bd-91a939453fc1.mp4"></video>
+<div class="hc"><div class="htx"><div class="hbg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 16l.7 1.8 1.8.7-1.8.7L19 21l-.7-1.8-1.8-.7 1.8-.7z"/></svg><span>KONFOR · </span><span data-k="h.k"></span></div>
+<h1 class="hh" data-k="h.t"></h1><p class="hp" data-k="h.l"></p></div>
+<div class="bl"><div><div class="n">45+</div><div class="l" data-k="h.st"></div></div><a class="bj" href="https://wa.me/963991310740" target="_blank" rel="noopener noreferrer"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></span><span data-k="h.wa"></span></a></div>
+<a class="br" href="#col"><div class="m m1"><svg class="k" viewBox="0 0 56 56" fill="none"><path d="M56 56V0C56 30.9279 30.9279 56 0 56H56Z" fill="#f0f0f0"/></svg></div><div class="m m2"><svg class="k" viewBox="0 0 56 56" fill="none"><path d="M56 56H0C30.9279 56 56 30.9279 56 0V56Z" fill="#f0f0f0"/></svg></div>
+<div class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path width="20" d="M7 17L17 7M8 7h9v9"/></svg></div><div class="tx"><div class="t" data-k="c.t"></div><div class="s"><span data-k="h.b1"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div></div></a></div></section></div>
 
-    <!-- قسم الفيديو والترحيب -->
-    <div class="hw">
-        <section class="hs">
-            <video class="hv" id="hv" autoplay muted loop playsinline preload="auto" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260428_193507_4286c423-2fd9-4efd-92bd-91a939453fc1.mp4"></video>
-            <div class="hc">
-                <div class="htx">
-                    <div class="hbg">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 16l.7 1.8 1.8.7-1.8.7L19 21l-.7-1.8-1.8-.7 1.8-.7z"/></svg>
-                        <span>KONFOR · </span>
-                        <span data-k="h.k"></span>
-                    </div>
-                    <h1 class="hh" data-k="h.t"></h1>
-                    <p class="hp" data-k="h.l"></p>
-                </div>
-                <div class="bl">
-                    <div>
-                        <div class="n">45+</div>
-                        <div class="l" data-k="h.st"></div>
-                    </div>
-                    <a class="bj" href="https://wa.me/963991310740" target="_blank" rel="noopener noreferrer">
-                        <span class="ic">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg>
-                        </span>
-                        <span data-k="h.wa"></span>
-                    </a>
-                </div>
-                <a class="br" href="#col">
-                    <div class="m m1"><svg class="k" viewBox="0 0 56 56" fill="none"><path d="M56 56V0C56 30.9279 30.9279 56 0 56H56Z" fill="#f0f0f0"/></svg></div>
-                    <div class="m m2"><svg class="k" viewBox="0 0 56 56" fill="none"><path d="M56 56H0C30.9279 56 56 30.9279 56 0V56Z" fill="#f0f0f0"/></svg></div>
-                    <div class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path width="20" d="M7 17L17 7M8 7h9v9"/></svg></div>
-                    <div class="tx">
-                        <div class="t" data-k="c.t"></div>
-                        <div class="s">
-                            <span data-k="h.b1"></span>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
-                    </div>
-                </a>
-            </div>
-        </section>
-    </div>
+<section class="wrap" id="col">
+    <h2 class="st rv" data-k="c.t"></h2>
+    <div class="cc-g" id="cc"></div>
+</section>
 
-    <!-- قسم المنتجات (سيتم تعبئته تلقائياً من فايربيس) -->
-    <section class="wrap" id="col">
-        <h2 class="st rv" data-k="c.t"></h2>
-        <div class="cc-g" id="cc"></div>
-    </section>
+<section class="wrap"><h2 class="st rv" data-k="a.t"></h2><div class="bed"><p class="rv" data-k="a.s"></p><div class="fr rv"><iframe src="bed.html" sandbox="allow-scripts" loading="lazy" title="KONFOR"></iframe></div></div></section>
 
-    <!-- قسم إضافي -->
-    <section class="wrap">
-        <h2 class="st rv" data-k="a.t"></h2>
-        <div class="bed">
-            <p class="rv" data-k="a.s"></p>
-            <div class="fr rv">
-                <iframe src="bed.html" sandbox="allow-scripts" loading="lazy" title="KONFOR"></iframe>
-            </div>
-        </div>
-    </section>
+<script src="js/i18n.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
 
-    <!-- ملفات الموقع الأساسية -->
-    <script src="js/i18n.js"></script>
-    <script src="js/data.js"></script>
-    <script src="js/app.js"></script>
+<!-- مكتبات Firebase المتوافقة -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-    <!-- مكتبات Firebase المتوافقة -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyD-bac9kfXCRvLrBR8GrfMn5E4YQ8rl41A",
+        authDomain: "konfor-c1128.firebaseapp.com",
+        projectId: "konfor-c1128",
+        storageBucket: "konfor-c1128.firebasestorage.app",
+        messagingSenderId: "986871870236",
+        appId: "1:986871870236:web:22d2216996e46c978480d9",
+        measurementId: "G-Z0975DMLLK"
+    };
 
-    <!-- سكريبت جلب وعرض المنتجات ديناميكياً -->
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyD-bac9kfXCRvLrBR8GrfMn5E4YQ8rl41A",
-            authDomain: "konfor-c1128.firebaseapp.com",
-            projectId: "konfor-c1128",
-            storageBucket: "konfor-c1128.firebasestorage.app",
-            messagingSenderId: "986871870236",
-            appId: "1:986871870236:web:22d2216996e46c978480d9",
-            measurementId: "G-Z0975DMLLK"
-        };
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
 
-        // منع تكرار تهيئة فايربيس إذا تم تحميله مسبقاً
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const db = firebase.firestore();
+    function loadFirestoreProducts() {
+        db.collection('products').onSnapshot(snapshot => {
+            const container = document.getElementById('cc');
+            if (!container) return;
 
-        function displayProducts() {
-            db.collection('products').onSnapshot(snapshot => {
-                const container = document.getElementById('cc');
-                if (!container) return;
-                
-                container.innerHTML = "";
-                snapshot.forEach(doc => {
-                    const item = doc.data();
-                    container.innerHTML += `
-                        <div class="product-card" style="background:#fff; padding:15px; border-radius:10px; margin-bottom:15px; border:1px solid #bae6fd;">
-                            ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.title}" style="width:100%; height:180px; object-fit:cover; border-radius:6px; margin-bottom:10px;">` : ''}
-                            <h3 style="color:#0284c7; margin-bottom:8px;">${item.title}</h3>
-                            <p style="color:#1e293b; margin-bottom:10px;">${item.desc || ''}</p>
-                            ${item.pdfUrl ? `<a href="${item.pdfUrl}" target="_blank" download="catalog.pdf" style="display:inline-block; background:#38bdf8; color:#fff; padding:8px 15px; border-radius:6px; text-decoration:none; font-weight:600;">تحميل الكتالوج (PDF)</a>` : ''}
-                        </div>
-                    `;
-                });
+            // إبقاء المنتجات الحالية أو تفريغها حسب الحاجة
+            container.innerHTML = "";
+
+            if (snapshot.empty) {
+                return;
+            }
+
+            snapshot.forEach(doc => {
+                const item = doc.data();
+                const card = document.createElement('div');
+                card.className = 'fb-card';
+
+                let html = '';
+                if (item.imageUrl) {
+                    html += `<img src="${item.imageUrl}" alt="${item.title}">`;
+                }
+                html += `<h3>${item.title || ''}</h3>`;
+                if (item.desc) {
+                    html += `<p>${item.desc}</p>`;
+                }
+                if (item.pdfUrl) {
+                    html += `<a href="${item.pdfUrl}" target="_blank" download="catalog.pdf" class="btn-pdf">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                                تحميل الكتالوج (PDF)
+                             </a>`;
+                }
+                card.innerHTML = html;
+                container.appendChild(card);
             });
-        }
+        }, error => {
+            console.error("خطأ في جلب المنتجات من فايربيس:", error);
+        });
+    }
 
-        window.addEventListener('DOMContentLoaded', displayProducts);
-    </script>
+    // التشغيل بعد انتهاء تحميل كل مكونات DOM وملفات app.js
+    window.addEventListener('load', function() {
+        setTimeout(loadFirestoreProducts, 500);
+    });
+</script>
 </body>
 </html>
