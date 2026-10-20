@@ -9,57 +9,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&family=Tajawal:wght@200;300;400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
-<style>
-    .fb-product-card {
-        background: #ffffff;
-        border: 1px solid #e0f2fe;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        transition: 0.3s;
-    }
-    .fb-product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(56, 189, 248, 0.2);
-    }
-    .fb-product-card img {
-        width: 100%;
-        height: 220px;
-        object-fit: cover;
-        border-radius: 8px;
-    }
-    .fb-product-card h3 {
-        color: #0284c7;
-        font-family: 'Tajawal', sans-serif;
-        font-size: 1.3rem;
-        margin: 0;
-    }
-    .fb-product-card p {
-        color: #1e293b;
-        font-family: 'Tajawal', sans-serif;
-        font-size: 1rem;
-        margin: 0;
-        line-height: 1.5;
-    }
-    .fb-product-card .pdf-btn {
-        display: inline-block;
-        background: #38bdf8;
-        color: #fff;
-        padding: 10px 20px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-weight: 600;
-        text-align: center;
-        margin-top: auto;
-        transition: 0.2s;
-    }
-    .fb-product-card .pdf-btn:hover {
-        background: #0284c7;
-    }
-</style>
 </head>
 <body data-p="home">
 <div class="hw"><section class="hs"><video class="hv" id="hv" autoplay muted loop playsinline preload="auto" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260428_193507_4286c423-2fd9-4efd-92bd-91a939453fc1.mp4"></video>
@@ -68,22 +17,15 @@
 <div class="bl"><div><div class="n">45+</div><div class="l" data-k="h.st"></div></div><a class="bj" href="https://wa.me/963991310740" target="_blank" rel="noopener noreferrer"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></span><span data-k="h.wa"></span></a></div>
 <a class="br" href="#col"><div class="m m1"><svg class="k" viewBox="0 0 56 56" fill="none"><path d="M56 56V0C56 30.9279 30.9279 56 0 56H56Z" fill="#f0f0f0"/></svg></div><div class="m m2"><svg class="k" viewBox="0 0 56 56" fill="none"><path d="M56 56H0C30.9279 56 56 30.9279 56 0V56Z" fill="#f0f0f0"/></svg></div>
 <div class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path width="20" d="M7 17L17 7M8 7h9v9"/></svg></div><div class="tx"><div class="t" data-k="c.t"></div><div class="s"><span data-k="h.b1"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div></div></a></div></section></div>
-
-<!-- قسم المنتجات -->
-<section class="wrap" id="col">
-    <h2 class="st rv" data-k="c.t"></h2>
-    <div class="cc-g" id="cc">
-        <!-- سيتم جلب المنتجات وعرضها هنا ديناميكياً من فايربيس -->
-    </div>
-</section>
-
+<section class="wrap" id="col"><h2 class="st rv" data-k="c.t"></h2><div class="cc-g" id="cc"></div></section>
 <section class="wrap"><h2 class="st rv" data-k="a.t"></h2><div class="bed"><p class="rv" data-k="a.s"></p><div class="fr rv"><iframe src="bed.html" sandbox="allow-scripts" loading="lazy" title="KONFOR"></iframe></div></div></section>
 
-<!-- ملفات الموقع الأساسية -->
+<!-- ملفات الموقع الأصلية الأساسية (التي تعيد إظهار التصميم بالكامل) -->
 <script src="js/i18n.js"></script>
 <script src="js/data.js"></script>
+<script src="js/app.js"></script>
 
-<!-- مكتبات Firebase المتوافقة -->
+<!-- مكتبات Firebase المتوافقة لجلب المنتجات -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
@@ -103,45 +45,28 @@
     }
     const db = firebase.firestore();
 
-    // جلب المنتجات وعرضها مباشرة في الحاوية cc
-    function loadLiveProducts() {
-        db.collection('products').onSnapshot(snapshot => {
-            const container = document.getElementById('cc');
-            if (!container) return;
-
-            container.innerHTML = "";
-
-            if (snapshot.empty) {
-                container.innerHTML = "<p style='text-align:center; grid-column:1/-1; color:#666;'>لا توجد منتجات مضافة حالياً.</p>";
-                return;
-            }
-
-            snapshot.forEach(doc => {
-                const item = doc.data();
-                const card = document.createElement('div');
-                card.className = 'fb-product-card';
-
-                let content = '';
-                if (item.imageUrl) {
-                    content += `<img src="${item.imageUrl}" alt="${item.title}">`;
-                }
-                content += `<h3>${item.title || 'بدون عنوان'}</h3>`;
-                if (item.desc) {
-                    content += `<p>${item.desc}</p>`;
-                }
-                if (item.pdfUrl) {
-                    content += `<a href="${item.pdfUrl}" target="_blank" download="catalog.pdf" class="pdf-btn">تحميل الكتالوج (PDF)</a>`;
-                }
-
-                card.innerHTML = content;
-                container.appendChild(card);
+    // جلب المنتجات وإضافتها بجانب محتوى الموقع الأصلي
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            db.collection('products').onSnapshot(snapshot => {
+                const container = document.getElementById('cc');
+                if (!container) return;
+                
+                snapshot.forEach(doc => {
+                    const item = doc.data();
+                    const card = document.createElement('div');
+                    card.style.cssText = "background:#fff; padding:15px; border-radius:10px; margin-bottom:15px; border:1px solid #bae6fd; box-shadow:0 4px 10px rgba(0,0,0,0.05);";
+                    card.innerHTML = `
+                        ${item.imageUrl ? `<img src="${item.imageUrl}" style="width:100%; height:180px; object-fit:cover; border-radius:6px; margin-bottom:10px;">` : ''}
+                        <h3 style="color:#0284c7; margin-bottom:8px; font-size:1.2rem;">${item.title || ''}</h3>
+                        <p style="color:#1e293b; margin-bottom:10px; font-size:0.95rem;">${item.desc || ''}</p>
+                        ${item.pdfUrl ? `<a href="${item.pdfUrl}" target="_blank" download="catalog.pdf" style="display:inline-block; background:#38bdf8; color:#fff; padding:8px 15px; border-radius:6px; text-decoration:none; font-weight:600;">تحميل الكتالوج (PDF)</a>` : ''}
+                    `;
+                    container.prepend(card);
+                });
             });
-        }, error => {
-            console.error("خطأ في الاتصال بقاعدة البيانات:", error);
-        });
-    }
-
-    window.addEventListener('DOMContentLoaded', loadLiveProducts);
+        }, 1000);
+    });
 </script>
 </body>
 </html>
