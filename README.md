@@ -8,4 +8,4 @@ git remote add origin https://github.com/USERNAME/konfor-site.git && git push -u
 Then Settings > Pages > Deploy from branch > main / root.
 
 Edit products: js/data.js (n name, d [ar,en,tr,fr] descriptions, z sizes). Interface translations: js/i18n.js.
-WhatsApp number: search 963991310740 in js/app.js and contact.html. Hero video: src in index.html.
+WhatsApp number: search 9090909099 in js/app.js and contact.html. Hero video: src in index.html.
