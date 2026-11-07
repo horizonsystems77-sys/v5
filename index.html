@@ -4,309 +4,120 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
-
-  <meta http-equiv="Content-Security-Policy"
-    content="default-src 'none'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com https://db.onlinewebfonts.com; img-src 'self' data: https:; media-src 'self' https://d8j0ntlcm91z4.cloudfront.net; frame-src 'self'; connect-src 'self' https://firestore.googleapis.com https://*.firebaseio.com https://*.googleapis.com; base-uri 'none'; form-action 'none'">
-
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com https://db.onlinewebfonts.com; img-src 'self' data:; media-src 'self' https://d8j0ntlcm91z4.cloudfront.net; frame-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
   <title>KONFOR</title>
-
+  
+  <!-- Preconnect to external font services for performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&family=Tajawal:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
-
+  
+  <!-- Import custom fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&family=Tajawal:wght@200;300;400&display=swap" rel="stylesheet">
+  
+  <!-- Main stylesheet -->
   <link rel="stylesheet" href="css/style.css">
-
-  <style>
-    .contact-section {
-      padding: 75px 20px;
-      text-align: center;
-      background: #f0f0f0;
-      color: #171717;
-    }
-
-    .contact-section h2 {
-      font-family: 'Tajawal', sans-serif;
-      margin-bottom: 15px;
-    }
-
-    .contact-description {
-      font-family: 'Tajawal', sans-serif;
-      margin-bottom: 35px;
-      color: #666;
-    }
-
-    .contact-grid {
-      max-width: 850px;
-      margin: auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 15px;
-    }
-
-    .contact-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      padding: 25px 15px;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      background: #fff;
-      color: #171717;
-      text-decoration: none;
-      transition: .3s ease;
-      font-family: 'Barlow', 'Tajawal', sans-serif;
-    }
-
-    .contact-card:hover {
-      transform: translateY(-5px);
-      border-color: #999;
-    }
-
-    .contact-icon {
-      font-size: 27px;
-    }
-
-    .contact-label {
-      font-size: 13px;
-      color: #888;
-    }
-
-    .contact-value {
-      font-size: 16px;
-      direction: ltr;
-    }
-
-    .contact-note {
-      margin-top: 25px;
-      font-size: 12px;
-      color: #888;
-      font-family: 'Tajawal', sans-serif;
-    }
-
-    footer {
-      padding: 25px 15px;
-      background: #171717;
-      color: #aaa;
-      text-align: center;
-      font-size: 13px;
-    }
-  </style>
 </head>
-
 <body data-p="home">
-
   <!-- Hero Section -->
   <div class="hw">
     <section class="hs">
-
-      <video
-        class="hv"
-        id="hv"
-        autoplay
-        muted
-        loop
-        playsinline
-        preload="auto"
+      <!-- Background video -->
+      <video 
+        class="hv" 
+        id="hv" 
+        autoplay 
+        muted 
+        loop 
+        playsinline 
+        preload="auto" 
         src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260428_193507_4286c423-2fd9-4efd-92bd-91a939453fc1.mp4">
       </video>
-
+      
+      <!-- Hero content overlay -->
       <div class="hc">
-
         <div class="htx">
-
+          <!-- Branding section -->
           <div class="hbg">
-            <svg viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round"
-              aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 16l.7 1.8 1.8.7-1.8.7L19 21l-.7-1.8-1.8-.7 1.8-.7z"/>
             </svg>
-
             <span>KONFOR · </span>
             <span data-k="h.k"></span>
           </div>
-
+          
+          <!-- Main headline and description -->
           <h1 class="hh" data-k="h.t"></h1>
           <p class="hp" data-k="h.l"></p>
-
         </div>
-
+        
+        <!-- Stats and CTA section -->
         <div class="bl">
-
           <div>
             <div class="n">45+</div>
             <div class="l" data-k="h.st"></div>
           </div>
-
-          <a class="bj"
-             href="https://wa.me/963944000000"
-             target="_blank"
-             rel="noopener noreferrer">
-
+          <a class="bj" href="https://wa.me/963991310740" target="_blank" rel="noopener noreferrer">
             <span class="ic">
-              <svg viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round"
-                aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M7 17L17 7M8 7h9v9"/>
               </svg>
             </span>
-
             <span data-k="h.wa"></span>
           </a>
-
         </div>
-
+        
+        <!-- Scroll indicator with animated waves -->
         <a class="br" href="#col" title="Scroll to next section">
-
           <div class="m m1">
-            <svg class="k" viewBox="0 0 56 56" fill="none">
+            <svg class="k" viewBox="0 0 56 56" fill="none" aria-hidden="true">
               <path d="M56 56V0C56 30.9279 30.9279 56 0 56H56Z" fill="#f0f0f0"/>
             </svg>
           </div>
-
           <div class="m m2">
-            <svg class="k" viewBox="0 0 56 56" fill="none">
+            <svg class="k" viewBox="0 0 56 56" fill="none" aria-hidden="true">
               <path d="M56 56H0C30.9279 56 56 30.9279 56 0V56Z" fill="#f0f0f0"/>
             </svg>
           </div>
-
           <div class="c">
-            <svg viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M7 17L17 7M8 7h9v9"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path width="20" d="M7 17L17 7M8 7h9v9"/>
             </svg>
           </div>
-
           <div class="tx">
             <div class="t" data-k="c.t"></div>
-
             <div class="s">
               <span data-k="h.b1"></span>
-              <svg viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M9 6l6 6-6 6"/>
               </svg>
             </div>
           </div>
-
         </a>
-
       </div>
     </section>
   </div>
 
   <!-- Collections Section -->
   <section class="wrap" id="col">
-
     <h2 class="st rv" data-k="c.t"></h2>
-
     <div class="cc-g" id="cc"></div>
-
   </section>
 
-  <!-- About Section -->
+  <!-- About Section with Embedded Content -->
   <section class="wrap">
-
     <h2 class="st rv" data-k="a.t"></h2>
-
     <div class="bed">
-
       <p class="rv" data-k="a.s"></p>
-
       <div class="fr rv">
-        <iframe
-          src="bed.html"
-          sandbox="allow-scripts"
-          loading="lazy"
-          title="KONFOR additional content">
-        </iframe>
+        <!-- Sandboxed iframe for additional content -->
+        <iframe src="bed.html" sandbox="allow-scripts" loading="lazy" title="KONFOR additional content"></iframe>
       </div>
-
     </div>
   </section>
 
-  <!-- Contact Section -->
-  <section class="contact-section" id="contact">
-
-    <h2>تواصل معنا</h2>
-
-    <p class="contact-description">
-      يسعدنا تواصلك معنا والاستفسار عن خدماتنا ومجموعاتنا.
-    </p>
-
-    <div class="contact-grid">
-
-      <a class="contact-card"
-         href="mailto:info@konfor-demo.com">
-
-        <span class="contact-icon">✉️</span>
-        <span class="contact-label">البريد الإلكتروني</span>
-        <span class="contact-value">info@konfor-demo.com</span>
-
-      </a>
-
-      <a class="contact-card"
-         href="tel:+963944000000">
-
-        <span class="contact-icon">📞</span>
-        <span class="contact-label">رقم الهاتف</span>
-        <span class="contact-value">+963 944 000 000</span>
-
-      </a>
-
-      <a class="contact-card"
-         href="https://wa.me/963944000000"
-         target="_blank"
-         rel="noopener noreferrer">
-
-        <span class="contact-icon">💬</span>
-        <span class="contact-label">واتساب</span>
-        <span class="contact-value">+963 944 000 000</span>
-
-      </a>
-
-      <a class="contact-card"
-         href="https://instagram.com/konfor.demo"
-         target="_blank"
-         rel="noopener noreferrer">
-
-        <span class="contact-icon">📷</span>
-        <span class="contact-label">إنستغرام</span>
-        <span class="contact-value">@konfor.demo</span>
-
-      </a>
-
-    </div>
-
-    <p class="contact-note">
-      KONFOR © 2026 — جميع الحقوق محفوظة
-    </p>
-
-    <p class="contact-note">
-      بيانات التواصل المعروضة تجريبية وغير مخصصة للاستخدام الفعلي.
-    </p>
-
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    KONFOR | Designed with elegance.
-  </footer>
-
-  <!-- Scripts -->
+  <!-- Scripts (in correct load order) -->
   <script src="js/i18n.js"></script>
   <script src="js/data.js"></script>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
   <script src="js/app.js"></script>
-
 </body>
 </html>
